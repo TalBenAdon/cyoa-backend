@@ -12,6 +12,12 @@ class Adventure:
 
         self.current_story_options = {} #current story options (send to USER)
 
+
+    def advance_scene(self):
+        self.history.append({
+            "status":self.status
+        })
+
     def get_adventure_info(self): #collect info from DB?
         return {
         "type": self.type,
