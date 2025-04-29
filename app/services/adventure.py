@@ -7,17 +7,20 @@ class Adventure:
         self.type = type # type of the adventure (slice of life, fantasy, etc..)
 
         self.history = [] #need to decide how to define adventure history
-        
-    def get_adventure_info(self):
+
+        self.current_story_text = None #current story text we just got from the ai (send to USER)
+
+        self.current_story_options = {} #current story options (send to USER)
+
+    def get_adventure_info(self): #collect info from DB?
         return {
         "type": self.type,
         "status": self.status,
         "history": self.history,
-
         }
 
 
-    def is_starting_scene(self):
+    def is_starting_scene(self): #will be used to generate starting scene from the AI in the api code 
         return self.status == 0
 
     
