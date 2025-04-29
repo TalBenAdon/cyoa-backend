@@ -6,6 +6,17 @@ class Adventure:
 
         self.type = type # type of the adventure (slice of life, fantasy, etc..)
 
+        self.history = [] #need to decide how to define adventure history
+        
+    def get_adventure_info(self):
+        return {
+        "type": self.type,
+        "status": self.status,
+        "history": self.history,
+
+        }
+
+
     def is_starting_scene(self):
         return self.status == 0
 
