@@ -1,6 +1,14 @@
 import logging
-from app.core.config import LOG_LEVEL, ENV
+import logging.handlers
+from app.core.config import LOG_LEVEL, ENV, LOG_DIR
 from colorlog import ColoredFormatter
+import os
+
+os.makedirs(LOG_DIR, exist_ok=True)
+LOG_FILE=os.path.join(LOG_DIR, "app.log")
+
+colored_format = "%(asctime)s [%(log_color)s%(levelname)s%(reset)s] %(name)s - %(message)s"
+normal_format =  "%(asctime)s [%(levelname)s] %(name)s - %(message)s"
 
 def get_logger(name: str) -> logging.Logger:
 
@@ -11,7 +19,7 @@ def get_logger(name: str) -> logging.Logger:
         if ENV == "development":
             
             formatter = ColoredFormatter(
-                "%(asctime)s [%(log_color)s%(levelname)s%(reset)s] %(message)s",
+                colored_format,
                 datefmt="%Y-%m-%d %H:%M:%S",
                 log_colors={
                     'DEBUG': 'cyan',
@@ -24,12 +32,20 @@ def get_logger(name: str) -> logging.Logger:
 
         else:
             formatter = logging.Formatter(
-               "%(asctime)s [%(levelname)s] %(message)s",
+               normal_format,
                 datefmt="%Y-%m-%d %H:%M:%S", 
             )
 
+        file_handler = logging.handlers.RotatingFileHandler(LOG_FILE, maxBytes=5*1024*1024, backupCount=3, encoding="utf-8")
+        
+        file_formatter = logging.Formatter(
+            normal_format
+        )
+
         console_handler.setFormatter(formatter)
+        file_handler.setFormatter(file_formatter)
         logger.addHandler(console_handler)
+        logger.addHandler(file_handler)
         logger.setLevel(LOG_LEVEL)
     
     return logger
