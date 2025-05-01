@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from app.services.openrouter_client import OpenRouterClient
 from app.models.ai import PromptRequest
 from app.core.logger import get_logger
