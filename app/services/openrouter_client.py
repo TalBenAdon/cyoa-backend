@@ -7,7 +7,7 @@ from fastapi import HTTPException
 logger = get_logger(__name__)
 
 
-model = "qwen/qwen3-30b-a3b:free"
+model = "qwen/qwen3-30b-a3b:free" #currently hard coding free model for testing
 
 class OpenRouterClient:
 
@@ -24,7 +24,7 @@ class OpenRouterClient:
         logger.info("chat with ai initialized")
 
         payload = {
-        "model": model, #currently hard coding free model for testing
+        "model": model, 
         "messages":[
                 {
                     "role":"user",
