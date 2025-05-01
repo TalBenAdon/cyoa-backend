@@ -43,7 +43,7 @@ class OpenRouterClient:
             raise HTTPException(status_code=response.status_code, detail=response.text)
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"Reqeust failed: {e}")
+            logger.error(f"Request failed: {e}")
             raise HTTPException(status_code=502, detail="AI service could not be reached.")
 
         except KeyError:
