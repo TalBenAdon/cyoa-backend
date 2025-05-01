@@ -20,7 +20,7 @@ class OpenRouterClient:
              "Content-Type": "application/json"
         }
 
-    def chat(self, prompt : str) -> str | None :
+    def chat(self, prompt : str) -> str :
         logger.info("chat with ai initialized")
 
         payload = {
