@@ -12,14 +12,7 @@ client = OpenRouterClient()
 async def chat(request: PromptRequest):
     logger.info("/chat api route accessed")
 
-    # try:
     result = client.chat(request.prompt)
         
     logger.info("/chat api route completed")
     return {"response": result}
-
-    # except Exception as e:
-    #     logger.exception("Exception intercepted in ai_chat /chat route")
-    #     raise HTTPException(status_code=500, detail="AI response failed.")
-
-
