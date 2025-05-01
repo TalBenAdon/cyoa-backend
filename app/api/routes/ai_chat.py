@@ -12,18 +12,14 @@ client = OpenRouterClient()
 async def chat(request: PromptRequest):
     logger.info("/chat api route accessed")
 
-    try:
-        result = client.chat(request.prompt)
-
-        if result is None:
-            logger.error("Ai response failed in @post /chat")
-            raise HTTPException(status_code=500, detail="AI response failed.")
+    # try:
+    result = client.chat(request.prompt)
         
-        logger.info("/chat api route completed")
-        return {"response": result}
+    logger.info("/chat api route completed")
+    return {"response": result}
 
-    except Exception as e:
-        logger.exception("Unexpected error in /chat endpoint")
-        raise HTTPException(status_code=500, detail="AI response failed.")
+    # except Exception as e:
+    #     logger.exception("Exception intercepted in ai_chat /chat route")
+    #     raise HTTPException(status_code=500, detail="AI response failed.")
 
 
