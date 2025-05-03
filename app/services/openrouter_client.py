@@ -1,8 +1,8 @@
 import requests
 import json
+from app.exceptions import OpenRouterAPIException, InvalidAIResponse, BaseAppException
 from app.core.config import OPENROUTER_KEY, OPENROUTER_URL
 from app.core.logger import get_logger
-from fastapi import HTTPException
 
 logger = get_logger(__name__)
 
@@ -37,22 +37,26 @@ class OpenRouterClient:
             response.raise_for_status()
             logger.info(f"AI response: {response.json()}")
             return response.json()["choices"][0]["message"]["content"]
-    
+
+        except requests.exceptions.Timeout:
+            logger.warning("Timeout when calling OpenROuter")
+            raise OpenRouterAPIException("OpenRouter timeout")
+        
         except requests.exceptions.HTTPError as e:
-            logger.error(f"HTTP error: {e} - Response: {response.text}")
-            raise HTTPException(status_code=response.status_code, detail=response.text)
+            logger.error(f"HTTP error from: {OPENROUTER_URL} - Response: {e.response.text}")
+            raise OpenRouterAPIException(f"HTTP error: {e.response.status_code}")
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"Request failed: {e}")
-            raise HTTPException(status_code=502, detail="AI service could not be reached.")
+            logger.error(f"Request failed while calling {OPENROUTER_URL}: {e.response.text}")
+            raise OpenRouterAPIException("OpenRouter request failed") from e
 
         except KeyError:
             logger.error(f"Unexpected response format: {response.text}")
-            raise HTTPException(status_code=500, detail="Invalid AI response format")
+            raise InvalidAIResponse("Invalid AI response format")
     
         except Exception as e:
             logger.exception(f"Unexpected error: {e}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+            raise BaseAppException("AI service failure") from e
         
 
     
