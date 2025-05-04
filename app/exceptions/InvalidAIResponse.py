@@ -1,4 +1,4 @@
-from exceptions import BaseAppException
+from .BaseAppException import BaseAppException
 class InvalidAIResponse(BaseAppException):
     """Raised when receiving a bad response from AI service"""
     def __init__(self, message: str):
