@@ -11,8 +11,9 @@ client = OpenRouterClient()
 @router.post("/chat")
 async def chat(request: PromptRequest):
     logger.info("/chat api route accessed")
-
+            
     result = client.chat(request.prompt)
-        
+            
     logger.info("/chat api route completed")
     return {"response": result}
+
