@@ -20,12 +20,16 @@ class OpenRouterClient:
              "Content-Type": "application/json"
         }
 
-    def chat(self, prompt : str) -> str :
+    def chat(self, prompt : str, type: str = "fantasy") -> str : #type is here for testing
         logger.info("chat with ai initialized")
 
         payload = {
         "model": model, 
         "messages":[
+                {
+                "role": "system",
+                "content" : f"You're an experienced story teller, like an D&D master. but you will adjust the nature of story telling based of the type of the adventure. this adventure's type is {type}. the format you will reply with every time will be in JSON format as follows: \"text\": (your adventure text here), \"options\": (an array of 3 option, \"actions\" the user may take. the user can also return a custom option.)"
+                },
                 {
                     "role":"user",
                     "content": f"{prompt}"
@@ -36,7 +40,9 @@ class OpenRouterClient:
             response = requests.post(self.url, headers=self.headers, data=json.dumps(payload))
             response.raise_for_status()
             logger.info(f"AI response: {response.json()}")
-            return response.json()["choices"][0]["message"]["content"]
+            content = response.json()["choices"][0]["message"]["content"]
+            parsed_content = json.loads(content) #AI replies with a big string, not actual JSON object
+            return parsed_content
 
         except requests.exceptions.Timeout:
             logger.warning("Timeout when calling OpenROuter")
