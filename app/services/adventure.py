@@ -1,10 +1,12 @@
+
 class Adventure:
-    def __init__(self, type : str = "fantasy"):
+    def __init__(self, client):
+        self.client = client
         #should generate some starting story and decisions when initialized with start
         self.status = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
         # maybe change status to numbers? 0 is start, and the story progresses by numbers of "scenes" generated
 
-        self.type = type # type of the adventure (slice of life, fantasy, etc..)
+        self.type = "" # type of the adventure (slice of life, fantasy, etc..)
 
         self.history = [] #need to decide how to define adventure history
 
@@ -12,6 +14,19 @@ class Adventure:
 
         self.current_story_options = {} #current story options (send to USER)
 
+    async def start_adventure(self, type: str = "fantasy"):
+        self.type = type
+        system_message = f"""
+            You are an experienced storyteller, like a D&D game master. You will adjust your storytelling style based on the type of adventure. 
+            This adventure's type is: "{type}".
+
+            Every reply must follow this JSON format:
+            - "text": (your adventure narration here)
+            - "options": (an array of 3 predefined "actions" the user may take)
+            Note: The user may also return a custom option.
+            """
+        user_message = "Start my adventure"
+        return await self.client.chat_with_ai(system_message, user_message)
 
     def advance_scene(self):
         self.history.append({

@@ -2,6 +2,8 @@ from fastapi import APIRouter
 from app.core.logger import get_logger
 from app.core.clients import adventure_client
 from app.core.clients import openrouter_client
+from app.models.adventure import StartAdventure
+
 logger = get_logger(__name__)
 router = APIRouter()
 
@@ -12,12 +14,11 @@ async def get_adventure_info():
     return info
 
     
-
+#need to truely make async with httpx
 @router.post("/start")
-async def start_new_adventure():
+async def start_new_adventure(request : StartAdventure):
     if adventure_client.is_starting_scene():
-        reply = openrouter_client.chat("Start my adventure") #need to truely make async with httpx
-        #INSERT ADVENTURE PROGRESS LOGIC
-        print({"reply" : reply})
-        return reply
+        
+  
+        return await adventure_client.start_adventure(request)
         
