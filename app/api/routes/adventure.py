@@ -1,9 +1,8 @@
 from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 from app.core.logger import get_logger
 from app.core.clients import adventure_client
 from app.core.clients import openrouter_client
-from app.models.adventure import StartAdventure
-
 logger = get_logger(__name__)
 router = APIRouter()
 
@@ -16,9 +15,14 @@ async def get_adventure_info():
     
 #need to truely make async with httpx
 @router.post("/start")
-async def start_new_adventure(request : StartAdventure):
-    if adventure_client.is_starting_scene():
-        
-  
-        return await adventure_client.start_adventure(request)
+async def start_new_adventure():
+    async def event_generator():
+        generator = await adventure_client.start_adventure()
+        async for word in generator:
+            print(word)
+            yield word        
+    
+            
+    logger.info("/chat api route completed")
+    return StreamingResponse(event_generator(), media_type="text/plain")
         
