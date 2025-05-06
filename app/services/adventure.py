@@ -68,6 +68,9 @@ class Adventure:
         option_pattern = r"<option\d+>\s*(.*?)\s*<option\d+/>"
         options = re.findall(option_pattern, response, re.DOTALL)
         
+        print(adventure_text)
+        print(options)
+        
         self.current_story_text = adventure_text
         self.current_story_options = options
         
@@ -77,8 +80,8 @@ class Adventure:
         self.history.append(history_dict)
         
         
-        print(self.ai_message_context)
-        print(self.history)
+        # print(self.ai_message_context)
+        # print(self.history)
         
 
     def get_adventure_info(self): #collect info from DB?

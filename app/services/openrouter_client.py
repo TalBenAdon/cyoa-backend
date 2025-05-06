@@ -25,7 +25,6 @@ class OpenRouterClient:
     async def chat_with_ai(self, ai_context_messages: list[str], on_complete: Callable[[str], None]) -> AsyncGenerator[str , None] : 
         logger.info("chat with ai initialized")
 
-
         payload = {
         "model": model, 
         "stream": True,
