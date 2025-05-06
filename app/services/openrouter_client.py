@@ -1,5 +1,5 @@
 import httpx
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Callable
 import json
 from app.exceptions import OpenRouterAPIException, InvalidAIResponse, BaseAppException
 from app.core.config import OPENROUTER_KEY, OPENROUTER_URL
@@ -22,7 +22,7 @@ class OpenRouterClient:
              "Content-Type": "application/json"
         }
 
-    async def chat_with_ai(self, system_message : str,user_message : str) -> AsyncGenerator[str , None] : 
+    async def chat_with_ai(self, system_message : str,user_message : str, on_complete: Callable[[str], None]) -> AsyncGenerator[str , None] : 
         logger.info("chat with ai initialized")
 
         payload = {
@@ -40,13 +40,13 @@ class OpenRouterClient:
             ],
     
     }
+        full_response = ""
         
         try:
             async with httpx.AsyncClient(timeout=None) as client:
                 async with client.stream("POST",self.url, headers=self.headers, json=(payload)) as response:
                 # response = await client.post(self.url, headers=self.headers, json=(payload))
                     async for line in response.aiter_lines():
-                        print(line)
                         if line.startswith("data: "):
                             raw = line.removeprefix("data: ").strip()
                             if raw == "[DONE]":
@@ -55,11 +55,12 @@ class OpenRouterClient:
                                 chunk = json.loads(raw)
                                 delta = chunk["choices"][0]["delta"]
                                 if "content" in delta:
-                                    yield delta["content"]
+                                    content_piece = delta["content"]
+                                    full_response += content_piece
+                                    yield content_piece
                             except(KeyError, json.JSONDecodeError) as e:
                                 logger.warning(f"Stream chunk error: {e} - Raw {raw}")
             
-
         except httpx.TimeoutException:
             logger.warning("Timeout when calling OpenROuter")
             raise OpenRouterAPIException("OpenRouter timeout")
@@ -79,6 +80,9 @@ class OpenRouterClient:
         except Exception as e:
             logger.exception(f"Unexpected error: {e}")
             raise BaseAppException("AI service failure") from e
+        
+        finally:
+            on_complete(full_response)
         
 
     
