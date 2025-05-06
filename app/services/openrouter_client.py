@@ -22,24 +22,15 @@ class OpenRouterClient:
              "Content-Type": "application/json"
         }
 
-    async def chat_with_ai(self, system_message : str,user_message : str, on_complete: Callable[[str], None]) -> AsyncGenerator[str , None] : 
+    async def chat_with_ai(self, ai_context_messages: list[str], on_complete: Callable[[str], None]) -> AsyncGenerator[str , None] : 
         logger.info("chat with ai initialized")
+
 
         payload = {
         "model": model, 
         "stream": True,
-        "messages":[
-                {
-                "role": "system",
-                "content" : system_message
-                },
-                {
-                    "role":"user",
-                    "content": user_message
-                }
-            ],
-    
-    }
+        "messages":ai_context_messages,
+        }
         full_response = ""
         
         try:
@@ -60,6 +51,8 @@ class OpenRouterClient:
                                     yield content_piece
                             except(KeyError, json.JSONDecodeError) as e:
                                 logger.warning(f"Stream chunk error: {e} - Raw {raw}")
+                                
+            on_complete(full_response)
             
         except httpx.TimeoutException:
             logger.warning("Timeout when calling OpenROuter")
@@ -81,8 +74,8 @@ class OpenRouterClient:
             logger.exception(f"Unexpected error: {e}")
             raise BaseAppException("AI service failure") from e
         
-        finally:
-            on_complete(full_response)
+
+       
         
 
     
