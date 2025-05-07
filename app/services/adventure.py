@@ -13,6 +13,12 @@ class Adventure:
 
         self.current_story_options = [] #current story options (send to USER)
 
+
+
+
+
+
+
     async def start_adventure(self, type: str = "fantasy"):
         self.type = type
         system_message = {
@@ -21,19 +27,19 @@ class Adventure:
             You are an experienced storyteller, like a D&D game master. You will adjust your storytelling style based on the type of adventure. 
             This adventure's type is: "{type}".
             
-         Every reply must be formatted like this (like in html tags):
+         Every reply must be formatted like this:
             <text>
             Your adventure Narration here
-            <text/>
+            </text>
             <option1>
             action the user may take
-            <option1/>
+            </option1>
             <option2>
             action the user may take
-            <option2/>
+            </option2>
             <option3>
             action the user may take
-            <option3/>
+            </option3>
             """
             }
             
@@ -46,30 +52,48 @@ class Adventure:
 
 
 
+
+
+
     def advance_status(self):
         self.status += 1
     
     
+
+
+
+
     async def advance_scene(self, user_choice):
         print(user_choice)
         user_message = {"role": "user", "content": f"{user_choice}"}
         self.ai_message_context.append(user_message)
         
         return self.client.chat_with_ai(self.ai_message_context, on_complete=self.parse_adventure_response)
-        
+
+
+
+
+
+
+
+
+
+
     def parse_adventure_response(self, response: str) -> Tuple[str, List[str]]:
         # Extract content inside <text>...</text/>
+        print(response)
         self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
         
-        text_match = re.search(r"<text>\s*(.*?)\s*<text/>", response, re.DOTALL)
+        text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
+        # text_match = re.search(r"<text>\s*(.*?)\s*<text/>", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""
-
         # Extract all <optionX>...</optionX/> entries
-        option_pattern = r"<option\d+>\s*(.*?)\s*<option\d+/>"
+        # option_pattern = r"<option\d+>\s*(.*?)\s*<option\d+/>"
+        option_pattern = r"<option\d+>\s*(.*?)\s*<\/?option\d+\s*/?>"
         options = re.findall(option_pattern, response, re.DOTALL)
         
-        print(adventure_text)
-        print(options)
+        # print(adventure_text)
+        # print(options)
         
         self.current_story_text = adventure_text
         self.current_story_options = options
@@ -84,6 +108,10 @@ class Adventure:
         # print(self.history)
         
 
+
+
+
+
     def get_adventure_info(self): #collect info from DB?
      
         return {
@@ -91,6 +119,11 @@ class Adventure:
         "status": self.status,
         "history": self.history,
         }
+
+
+
+
+
 
 
     def is_starting_scene(self): #will be used to generate starting scene from the AI in the api code 
