@@ -1,10 +1,12 @@
 from typing import Tuple, List
 import re
+import uuid
 class Adventure:
     def __init__(self, client):
+        self.id = str(uuid.uuid4())
         self.client = client
         #should generate some starting story and decisions when initialized with start
-        self.status = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
+        self.scene_num = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
         # maybe change status to numbers? 0 is start, and the story progresses by numbers of "scenes" generated
         self.type = ""
         self.history = [] #need to decide how to define adventure history
@@ -56,7 +58,7 @@ class Adventure:
 
 
     def advance_status(self):
-        self.status += 1
+        self.scene_num += 1
     
     
 
@@ -99,7 +101,7 @@ class Adventure:
         self.current_story_options = options
         
         self.advance_status()
-        history_dict = {"text": adventure_text, "options": options, "status": self.status}
+        history_dict = {"text": adventure_text, "options": options, "status": self.scene_num}
         
         self.history.append(history_dict)
         
@@ -115,8 +117,9 @@ class Adventure:
     def get_adventure_info(self): #collect info from DB?
      
         return {
+            "id": self.id,
         "type": self.type,
-        "status": self.status,
+        "scene_number": self.scene_num,
         "history": self.history,
         }
 
@@ -127,7 +130,7 @@ class Adventure:
 
 
     def is_starting_scene(self): #will be used to generate starting scene from the AI in the api code 
-        return self.status == 0
+        return self.scene_num == 0
 
     
     
