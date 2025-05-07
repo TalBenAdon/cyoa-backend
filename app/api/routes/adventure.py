@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 from app.core.logger import get_logger
 from app.core.clients import adventure_client
 from app.models.adventure import AdvanceAdventure, StartAdventure
+from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 logger = get_logger(__name__)
 router = APIRouter()
 
@@ -25,6 +26,9 @@ async def start_new_adventure(request: StartAdventure):
                 
         logger.info("/start adventure route completed")
         return StreamingResponse(event_generator(), media_type="text/plain")
+    else:
+        logger.warning("User already has an adventure")
+        raise HasExistingAdventureException()
 
 
 
