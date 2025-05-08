@@ -85,17 +85,12 @@ class Adventure:
         # Extract content inside <text>...</text/>
         print(response)
         self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
-        
         text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
-        # text_match = re.search(r"<text>\s*(.*?)\s*<text/>", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""
-        # Extract all <optionX>...</optionX/> entries
-        # option_pattern = r"<option\d+>\s*(.*?)\s*<option\d+/>"
+
         option_pattern = r"<option\d+>\s*(.*?)\s*<\/?option\d+\s*/?>"
         options = re.findall(option_pattern, response, re.DOTALL)
         
-        # print(adventure_text)
-        # print(options)
         
         self.current_story_text = adventure_text
         self.current_story_options = options
@@ -106,8 +101,6 @@ class Adventure:
         self.history.append(history_dict)
         
         
-        # print(self.ai_message_context)
-        # print(self.history)
         
 
 
