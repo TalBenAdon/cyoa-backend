@@ -1,39 +1,47 @@
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import re
+import uuid
+
 class Adventure:
-    def __init__(self, client):
+    def __init__(self, client, type):
+        self.id = str(uuid.uuid4())
         self.client = client
         #should generate some starting story and decisions when initialized with start
-        self.status = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
+        self.scene_num = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
         # maybe change status to numbers? 0 is start, and the story progresses by numbers of "scenes" generated
-        self.type = ""
+        self.type = type
         self.history = [] #need to decide how to define adventure history
 
         self.current_story_text = None #current story text we just got from the ai (send to USER)
 
         self.current_story_options = [] #current story options (send to USER)
 
-    async def start_adventure(self, type: str = "fantasy"):
-        self.type = type
+
+
+
+
+
+
+    async def start_adventure(self):
         system_message = {
             "role": "system",
             "content":f"""
             You are an experienced storyteller, like a D&D game master. You will adjust your storytelling style based on the type of adventure. 
-            This adventure's type is: "{type}".
+            This adventure's type is: "{self.type}".
             
-         Every reply must be formatted like this (like in html tags):
+         Every reply must be formatted like this:
             <text>
             Your adventure Narration here
-            <text/>
+            </text>
             <option1>
             action the user may take
-            <option1/>
+            </option1>
             <option2>
             action the user may take
-            <option2/>
+            </option2>
             <option3>
             action the user may take
-            <option3/>
+            </option3>
             """
             }
             
@@ -46,52 +54,76 @@ class Adventure:
 
 
 
+
+
+
     def advance_status(self):
-        self.status += 1
+        self.scene_num += 1
     
     
+
+
+
+
     async def advance_scene(self, user_choice):
         print(user_choice)
         user_message = {"role": "user", "content": f"{user_choice}"}
         self.ai_message_context.append(user_message)
         
         return self.client.chat_with_ai(self.ai_message_context, on_complete=self.parse_adventure_response)
-        
-    def parse_adventure_response(self, response: str) -> Tuple[str, List[str]]:
+
+
+
+
+
+
+
+
+
+
+    def parse_adventure_response(self, response: str):
         # Extract content inside <text>...</text/>
+        print(response)
         self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
-        
-        text_match = re.search(r"<text>\s*(.*?)\s*<text/>", response, re.DOTALL)
+        text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""
 
-        # Extract all <optionX>...</optionX/> entries
-        option_pattern = r"<option\d+>\s*(.*?)\s*<option\d+/>"
+        option_pattern = r"<option\d+>\s*(.*?)\s*<\/?option\d+\s*/?>"
         options = re.findall(option_pattern, response, re.DOTALL)
+        
         
         self.current_story_text = adventure_text
         self.current_story_options = options
         
         self.advance_status()
-        history_dict = {"text": adventure_text, "options": options, "status": self.status}
+        history_dict = {"text": adventure_text, "options": options, "status": self.scene_num}
         
         self.history.append(history_dict)
         
         
-        print(self.ai_message_context)
-        print(self.history)
         
 
-    def get_adventure_info(self): #collect info from DB?
+
+
+
+
+    def get_adventure_info(self) -> Dict: #collect info from DB?
      
         return {
+            "id": self.id,
         "type": self.type,
-        "status": self.status,
+        "scene_number": self.scene_num,
         "history": self.history,
         }
 
 
+
+
+
+
+
     def is_starting_scene(self): #will be used to generate starting scene from the AI in the api code 
-        return self.status == 0
+        return self.scene_num == 0
 
     
     
