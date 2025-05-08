@@ -1,6 +1,7 @@
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import re
 import uuid
+
 class Adventure:
     def __init__(self, client, type):
         self.id = str(uuid.uuid4())
@@ -113,7 +114,7 @@ class Adventure:
 
 
 
-    def get_adventure_info(self): #collect info from DB?
+    def get_adventure_info(self) -> Dict: #collect info from DB?
      
         return {
             "id": self.id,

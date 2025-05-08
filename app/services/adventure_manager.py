@@ -10,3 +10,8 @@ def create_adventure(type: str = "fantasy") -> Adventure:
     adventures[adventure.id] = adventure
     return adventure
 
+
+
+
+def get_adventure(adventure_id : str) -> Adventure | None:
+    return adventures.get(adventure_id)
