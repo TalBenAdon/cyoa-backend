@@ -39,11 +39,12 @@ async def start_new_adventure(request: StartAdventure):
 
 
 
-@router.post("/choice")
+@router.post("/choice/{adventure_id}")
 async def advance_adventure(request : AdvanceAdventure):
-    if not adventure_client.is_starting_scene():
+    adventure = get_adventure(request.adventure_id)
+    if not adventure.is_starting_scene():
         async def event_generator():
-            generator = await adventure_client.advance_scene(request.choice)
+            generator = await adventure.advance_scene(request.choice)
             async for word in generator:
                 yield word        
         
