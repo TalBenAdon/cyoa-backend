@@ -5,3 +5,4 @@ class StartAdventure(BaseModel):
     
 class AdvanceAdventure(BaseModel):
     choice: str
+    adventure_id: str
