@@ -2,13 +2,13 @@ from typing import Tuple, List
 import re
 import uuid
 class Adventure:
-    def __init__(self, client):
+    def __init__(self, client, type):
         self.id = str(uuid.uuid4())
         self.client = client
         #should generate some starting story and decisions when initialized with start
         self.scene_num = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
         # maybe change status to numbers? 0 is start, and the story progresses by numbers of "scenes" generated
-        self.type = ""
+        self.type = type
         self.history = [] #need to decide how to define adventure history
 
         self.current_story_text = None #current story text we just got from the ai (send to USER)
@@ -21,13 +21,12 @@ class Adventure:
 
 
 
-    async def start_adventure(self, type: str = "fantasy"):
-        self.type = type
+    async def start_adventure(self):
         system_message = {
             "role": "system",
             "content":f"""
             You are an experienced storyteller, like a D&D game master. You will adjust your storytelling style based on the type of adventure. 
-            This adventure's type is: "{type}".
+            This adventure's type is: "{self.type}".
             
          Every reply must be formatted like this:
             <text>
@@ -81,7 +80,7 @@ class Adventure:
 
 
 
-    def parse_adventure_response(self, response: str) -> Tuple[str, List[str]]:
+    def parse_adventure_response(self, response: str):
         # Extract content inside <text>...</text/>
         print(response)
         self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
