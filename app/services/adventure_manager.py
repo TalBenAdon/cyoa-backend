@@ -2,7 +2,7 @@ from typing import Dict, List
 from app.services.adventure import Adventure
 from app.core.clients import openrouter_client
 
-
+# temporary adventures data list
 adventures : Dict[str, Adventure] = {}
 
 def create_adventure(type: str = "fantasy") -> Adventure:
