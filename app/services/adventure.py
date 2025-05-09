@@ -96,7 +96,7 @@ class Adventure:
         self.current_story_options = options
         
         self.advance_status()
-        history_dict = {"text": adventure_text, "options": options, "status": self.scene_num}
+        history_dict = {"text": adventure_text, "options": options, "scene": self.scene_num}
         
         self.history.append(history_dict)
         
