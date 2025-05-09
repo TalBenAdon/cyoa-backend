@@ -9,6 +9,9 @@ logger = get_logger(__name__)
 router = APIRouter()
 
 
+
+
+
 @router.get("/info/{adventure_id}")
 async def get_adventure_info(adventure_id):
     adventure = get_adventure(adventure_id)
