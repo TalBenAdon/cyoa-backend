@@ -39,6 +39,10 @@ async def start_new_adventure(request: StartAdventure):
 @router.post("/choice/{adventure_id}")
 async def advance_adventure(request : AdvanceAdventure):
     adventure = get_adventure(request.adventure_id)
+    if not adventure:
+        logger.warning("Adventure not found when a choice was made")
+        raise AdventureNotFound()
+    
     if not adventure.is_starting_scene():
         async def event_generator():
             generator = await adventure.advance_scene(request.choice)
@@ -48,5 +52,6 @@ async def advance_adventure(request : AdvanceAdventure):
                 
         logger.info("/choice adventure route completed")
         return StreamingResponse(event_generator(), media_type="text/plain")
+    
 
         
