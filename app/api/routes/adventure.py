@@ -22,19 +22,17 @@ async def get_adventure_info(adventure_id):
 @router.post("/start")
 async def start_new_adventure(request: StartAdventure):
     adventure = create_adventure(request.type)
-    if adventure.is_starting_scene():
+
         
-        async def event_generator():
-            generator = await adventure.start_adventure()
-            async for word in generator:
-                yield word        
+    async def event_generator():
+        generator = await adventure.start_adventure()
+        async for word in generator:
+            yield word        
         
                 
-        logger.info("/start adventure route completed")
-        return StreamingResponse(event_generator(), media_type="text/plain", headers={"X-Adventure-ID": adventure.id})
-    else:
-        logger.warning("User already has an adventure")
-        raise HasExistingAdventureException()
+    logger.info("/start adventure route completed")
+    return StreamingResponse(event_generator(), media_type="text/plain", headers={"X-Adventure-ID": adventure.id})
+
 
 
 
