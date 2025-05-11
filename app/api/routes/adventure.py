@@ -45,9 +45,9 @@ async def start_new_adventure(request: StartAdventure):
         generator = await adventure.start_adventure()
         async for word in generator:
             yield word        
-        
-                
-    logger.info("/start adventure route completed")
+        logger.info("/start adventure route completed streaming")
+    
+    
     return StreamingResponse(event_generator(), media_type="text/plain", headers={"X-Adventure-ID": adventure.id})
 
 
