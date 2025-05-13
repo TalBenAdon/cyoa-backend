@@ -93,12 +93,16 @@ class Adventure:
         # Extract content inside <text>...</text/>
         print(response)
         self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
+        
+        if not self.name:
+            name_match = re.search(r"<name>\s*(.*?)\s*</?name\s*/?>", response, re.DOTALL)
+            self.name = name_match.group(1).strip() if name_match else ""
+        
         text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""
 
         option_pattern = r"<option\d+>\s*(.*?)\s*<\/?option\d+\s*/?>"
         options = re.findall(option_pattern, response, re.DOTALL)
-        
         
         self.current_story_text = adventure_text
         self.current_story_options = options
