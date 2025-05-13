@@ -30,9 +30,12 @@ class AdventureInfoResponse(BaseModel):
 
 
 
-class AdventuresIdListResponse(BaseModel):
-    adventures_ids: List[str] = Field(alias="adventuresIds")
-
+class AdventureIdName(BaseModel):
+    adventure_id: str = Field(alias="adventureId")
+    adventure_name:str = Field(alias="adventureName")
     model_config = {
         "populate_by_name" : True
     }
+    
+class AdventuresIdListResponse(BaseModel):
+    adventures: List[AdventureIdName]
