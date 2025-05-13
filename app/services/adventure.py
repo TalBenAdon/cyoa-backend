@@ -122,7 +122,8 @@ class Adventure:
     def get_adventure_info(self) -> Dict: #collect info from DB?
      
         return {
-            "id": self.id,
+        "id": self.id,
+        "name": self.name,
         "type": self.type,
         "scene_number": self.scene_num,
         "history": self.history,
