@@ -4,13 +4,13 @@ from app.core.logger import get_logger
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
-from app.services.adventure_manager import create_adventure, get_adventure, get_adventures_ids
+from app.services.adventure_manager import create_adventure, get_adventure, get_adventures
 logger = get_logger(__name__)
 router = APIRouter()
 
 @router.get("/adventures", response_model=AdventuresIdListResponse)
 async def return_adventures_ids():
-    return AdventuresIdListResponse(adventures_ids=get_adventures_ids())
+    return AdventuresIdListResponse(adventures=get_adventures())
 
 
 
