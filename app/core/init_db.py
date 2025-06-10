@@ -12,7 +12,20 @@ def init_db():
             name TEXT NOT NULL,
             current_story_text TEXT,
             current_story_options TEXT,
+            current_story_scene INTEGER,
             last_chosen_option TEXT
+        )
+        '''
+    )
+    
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS adventures_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            adventure_id TEXT NOT NULL,
+            scene_number INTEGER,
+            choices TEXT,
+            chosen_choice TEXT
         )
         '''
     )
