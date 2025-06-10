@@ -25,7 +25,9 @@ def init_db():
             adventure_id TEXT NOT NULL,
             scene_number INTEGER,
             choices TEXT,
-            chosen_choice TEXT
+            chosen_choice TEXT,
+            timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (adventure_id) REFERENCES adventures(id)
         )
         '''
     )
