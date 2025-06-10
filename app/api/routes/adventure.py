@@ -4,13 +4,13 @@ from app.core.logger import get_logger
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
-from app.services.adventure_manager import create_adventure, get_adventure, get_adventures_ids
+from app.services.adventure_manager import create_adventure, get_adventure, get_adventures
 logger = get_logger(__name__)
 router = APIRouter()
 
 @router.get("/adventures", response_model=AdventuresIdListResponse)
 async def return_adventures_ids():
-    return AdventuresIdListResponse(adventures_ids=get_adventures_ids())
+    return AdventuresIdListResponse(adventures=get_adventures())
 
 
 
@@ -39,19 +39,17 @@ async def get_adventure_info(adventure_id):
             }})
 async def start_new_adventure(request: StartAdventure):
     adventure = create_adventure(request.type)
-    if adventure.is_starting_scene():
+
         
-        async def event_generator():
-            generator = await adventure.start_adventure()
-            async for word in generator:
-                yield word        
-        
-                
-        logger.info("/start adventure route completed")
-        return StreamingResponse(event_generator(), media_type="text/plain", headers={"X-Adventure-ID": adventure.id})
-    else:
-        logger.warning("User already has an adventure")
-        raise HasExistingAdventureException()
+    async def event_generator():
+        generator = await adventure.start_adventure()
+        async for word in generator:
+            yield word        
+        logger.info("/start adventure route completed streaming")
+    
+    
+    return StreamingResponse(event_generator(), media_type="text/plain", headers={"X-Adventure-ID": adventure.id})
+
 
 
 
@@ -69,12 +67,15 @@ async def advance_adventure(adventure_id, request : AdvanceAdventure):
     
     if not adventure.is_starting_scene():
         async def event_generator():
-            generator = await adventure.advance_scene(request.choice)
-            async for word in generator:
-                yield word        
-        
-                
-        logger.info("/choice adventure route completed")
+            try:
+                generator = await adventure.advance_scene(request.choice)
+                async for word in generator:
+                    yield word        
+                logger.info("/choice adventure route completed")
+            except Exception as e:
+                logger.error(f"streaming failed: {e}")
+             
         return StreamingResponse(event_generator(), media_type="text/plain")
+    
 
         

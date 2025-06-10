@@ -10,10 +10,11 @@ class Adventure:
         self.scene_num = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
         # maybe change status to numbers? 0 is start, and the story progresses by numbers of "scenes" generated
         self.type = type
+        self.name = "" #adventure needs a short name for UI purposes
         self.history = [] #need to decide how to define adventure history
 
         self.current_story_text = None #current story text we just got from the ai (send to USER)
-
+        self.last_chosen_option = None
         self.current_story_options = [] #current story options (send to USER)
 
 
@@ -29,20 +30,27 @@ class Adventure:
             You are an experienced storyteller, like a D&D game master. You will adjust your storytelling style based on the type of adventure. 
             This adventure's type is: "{self.type}".
             
-         Every reply must be formatted like this:
-            <text>
-            Your adventure Narration here
-            </text>
-            <option1>
-            action the user may take
-            </option1>
-            <option2>
-            action the user may take
-            </option2>
-            <option3>
-            action the user may take
-            </option3>
-            """
+         Your responses must be formatted using the following tags:
+
+    - In the **first reply only**, include the title of the adventure using the <name> tag:
+        <name>
+        The adventure's name
+        </name>
+
+    - Every reply (including the first) must include the following:
+        <text>
+        Your adventure narration here
+        </text>
+        <option1>
+        Action the user may take
+        </option1>
+        <option2>
+        Action the user may take
+        </option2>
+        <option3>
+        Action the user may take
+        </option3>
+    """
             }
             
         
@@ -85,12 +93,16 @@ class Adventure:
         # Extract content inside <text>...</text/>
         print(response)
         self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
+        
+        if not self.name:
+            name_match = re.search(r"<name>\s*(.*?)\s*</?name\s*/?>", response, re.DOTALL)
+            self.name = name_match.group(1).strip() if name_match else ""
+        
         text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""
 
         option_pattern = r"<option\d+>\s*(.*?)\s*<\/?option\d+\s*/?>"
         options = re.findall(option_pattern, response, re.DOTALL)
-        
         
         self.current_story_text = adventure_text
         self.current_story_options = options
@@ -110,7 +122,8 @@ class Adventure:
     def get_adventure_info(self) -> Dict: #collect info from DB?
      
         return {
-            "id": self.id,
+        "id": self.id,
+        "name": self.name,
         "type": self.type,
         "scene_number": self.scene_num,
         "history": self.history,
