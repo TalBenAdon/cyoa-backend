@@ -10,7 +10,9 @@ def init_db():
         CREATE TABLE IF NOT EXISTS adventures (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
-            
+            current_story_text TEXT,
+            current_story_options TEXT,
+            last_chosen_option TEXT
         )
         '''
     )

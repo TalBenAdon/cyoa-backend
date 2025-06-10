@@ -22,3 +22,5 @@ expose_headers=["X-Adventure-ID"]
 async def root():
     logger.info("main root accessed")
     return {"message": "MCP root"}
+
+

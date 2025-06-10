@@ -14,7 +14,7 @@ class Adventure:
         self.history = [] #need to decide how to define adventure history
 
         self.current_story_text = None #current story text we just got from the ai (send to USER)
-
+        self.last_chosen_option = None
         self.current_story_options = [] #current story options (send to USER)
 
 
