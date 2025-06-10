@@ -67,12 +67,14 @@ async def advance_adventure(adventure_id, request : AdvanceAdventure):
     
     if not adventure.is_starting_scene():
         async def event_generator():
-            generator = await adventure.advance_scene(request.choice)
-            async for word in generator:
-                yield word        
-        
-                
-        logger.info("/choice adventure route completed")
+            try:
+                generator = await adventure.advance_scene(request.choice)
+                async for word in generator:
+                    yield word        
+                logger.info("/choice adventure route completed")
+            except Exception as e:
+                logger.error(f"streaming failed: {e}")
+             
         return StreamingResponse(event_generator(), media_type="text/plain")
     
 
