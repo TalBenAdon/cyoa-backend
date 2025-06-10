@@ -2,7 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.logger import get_logger
 from app.api import api_router
+from app.core.init_db import init_db
 logger = get_logger(__name__)
+
+init_db()
 
 app = FastAPI()
 
@@ -22,3 +25,5 @@ expose_headers=["X-Adventure-ID"]
 async def root():
     logger.info("main root accessed")
     return {"message": "MCP root"}
+
+
