@@ -25,3 +25,4 @@ CREATE_ADVENTURE_HISTORY_INDEX = '''
 CREATE INDEX IF NOT EXISTS idx_adventure_history_adventure_id
 ON adventure_history(adventure_id)
 '''
+
