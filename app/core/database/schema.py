@@ -11,7 +11,7 @@ def init_db():
    
         cursor = conn.cursor()
         
-        cursor.execute(CREATE_ADVENTURES_HISTORY_TABLE)
+        cursor.execute(CREATE_ADVENTURES_TABLE)
         cursor.execute(CREATE_ADVENTURES_HISTORY_TABLE)
         cursor.execute(CREATE_ADVENTURE_HISTORY_INDEX)
         
