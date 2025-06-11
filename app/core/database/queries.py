@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS adventures (
     name TEXT NOT NULL,
     current_story_text TEXT,
     current_story_options TEXT,
-    current_story_scene INTEGER,
+    current_scene_number INTEGER,
     last_chosen_option TEXT
 )
 '''
@@ -28,7 +28,15 @@ ON adventure_history(adventure_id)
 
 INSERT_ADVENTURE = '''
 INSERT INTO adventures(
-id, name, current_story_text, current_story_options, current_story_scene, last_chosen_option
+id, name, current_story_text, current_story_options, current_scene_number, last_chosen_option
 )
 VALUES(?,?,?,?,?,?)
+'''
+
+
+INSERT_ADVENTURE_HISTORY = '''
+INSERT INTO adventures_history(
+adventure_id, scene_text, scene_number, chosen_choice
+)
+VALUES(?,?,?,?) 
 '''
