@@ -3,7 +3,7 @@ from typing import Dict, List
 from app.services.adventure import Adventure
 from app.core.clients import openrouter_client
 from app.core.logger import get_logger
-from app.core.database.database import get_connection
+from app.core.database.connection import get_connection
 from app.models.adventure import AdventureIdName
 
 logger = get_logger(__name__)
