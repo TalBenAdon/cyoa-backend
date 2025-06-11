@@ -26,3 +26,9 @@ CREATE INDEX IF NOT EXISTS idx_adventure_history_adventure_id
 ON adventure_history(adventure_id)
 '''
 
+INSERT_ADVENTURE = '''
+INSERT INTO adventures(
+id, name, current_story_text, current_story_options, current_story_scene, last_chosen_option
+)
+VALUES(?,?,?,?,?,?)
+'''
