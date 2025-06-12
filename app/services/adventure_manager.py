@@ -6,7 +6,8 @@ from app.core.logger import get_logger
 from app.core.database.connection import get_connection
 from app.models.adventure import AdventureIdName
 from app.core.database.queries import (
-    INSERT_ADVENTURE
+    INSERT_ADVENTURE,
+    GET_ADVENTURE_BY_ID
 )
 logger = get_logger(__name__)
 
@@ -46,4 +47,16 @@ def get_adventures() -> List[AdventureIdName]:
 
 
 def get_adventure(adventure_id : str) -> Adventure | None:
-    return adventures.get(adventure_id)
+    with get_connection() as conn:
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+            GET_ADVENTURE_BY_ID,
+            adventure_id
+            )
+            row = cursor.fetchone()
+            return dict(row) if row else None
+        
+        except Exception as e:
+            logger.error(f"failed fetching requested adventure {e}")
+            return None

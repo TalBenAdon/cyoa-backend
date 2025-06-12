@@ -40,3 +40,8 @@ adventure_id, scene_text, scene_number, chosen_choice
 )
 VALUES(?,?,?,?) 
 '''
+
+GET_ADVENTURE_BY_ID = '''
+SELECT * FROM adventures WHERE id = ?"
+'''
+
