@@ -5,7 +5,9 @@ from app.core.clients import openrouter_client
 from app.core.logger import get_logger
 from app.core.database.connection import get_connection
 from app.models.adventure import AdventureIdName
-
+from app.core.database.queries import (
+    INSERT_ADVENTURE
+)
 logger = get_logger(__name__)
 
 
@@ -18,12 +20,7 @@ def create_adventure(type: str = "fantasy") -> Adventure:
     with get_connection() as conn: 
         cursor = conn.cursor()
         cursor.execute(
-            '''
-            INSERT INTO adventures (
-                id, name, current_story_text, current_story_options, current_story_scene, last_chosen_option
-                )
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''',
+        INSERT_ADVENTURE,
             (
             adventure.id,
             adventure.name,
