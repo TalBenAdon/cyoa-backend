@@ -31,7 +31,7 @@ def create_adventure(type: str = "fantasy") -> Adventure:
             )
         )
     
-    return 
+    return adventure
 
 
 
