@@ -45,3 +45,6 @@ GET_ADVENTURE_BY_ID = '''
 SELECT * FROM adventures WHERE id = ?
 '''
 
+GET_ALL_ADVENTURES = '''
+SELECT id, name FROM adventures
+'''
