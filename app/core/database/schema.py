@@ -2,7 +2,7 @@ from app.core.database.connection import get_connection
 from app.core.database.queries import (
     CREATE_ADVENTURES_HISTORY_TABLE,
     CREATE_ADVENTURES_TABLE,
-    CREATE_ADVENTURE_HISTORY_INDEX
+    CREATE_ADVENTURES_HISTORY_INDEX
 )
 
 def init_db():
@@ -13,5 +13,5 @@ def init_db():
         
         cursor.execute(CREATE_ADVENTURES_TABLE)
         cursor.execute(CREATE_ADVENTURES_HISTORY_TABLE)
-        cursor.execute(CREATE_ADVENTURE_HISTORY_INDEX)
+        cursor.execute(CREATE_ADVENTURES_HISTORY_INDEX)
         

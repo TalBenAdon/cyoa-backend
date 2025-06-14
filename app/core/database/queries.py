@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS adventures_history(
 )
 '''
 
-CREATE_ADVENTURE_HISTORY_INDEX = '''
+CREATE_ADVENTURES_HISTORY_INDEX = '''
 CREATE INDEX IF NOT EXISTS idx_adventure_history_adventure_id
-ON adventure_history(adventure_id)
+ON adventures_history(adventure_id)
 '''
 
 INSERT_ADVENTURE = '''
@@ -42,6 +42,6 @@ VALUES(?,?,?,?)
 '''
 
 GET_ADVENTURE_BY_ID = '''
-SELECT * FROM adventures WHERE id = ?"
+SELECT * FROM adventures WHERE id = ?
 '''
 

@@ -1,4 +1,5 @@
 import json
+import sqlite3
 from typing import Dict, List
 from app.services.adventure import Adventure
 from app.core.clients import openrouter_client
@@ -31,7 +32,7 @@ def create_adventure(type: str = "fantasy") -> Adventure:
             adventure.last_chosen_option
             )
         )
-    
+    print("f from create_adventure: {adventure}")
     return adventure
 
 
@@ -49,12 +50,17 @@ def get_adventures() -> List[AdventureIdName]:
 def get_adventure(adventure_id : str) -> Adventure | None:
     with get_connection() as conn:
         try:
+            print(f"my id: {adventure_id}")
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute(
             GET_ADVENTURE_BY_ID,
-            adventure_id
+            (adventure_id,)
             )
             row = cursor.fetchone()
+            row = dict(row)
+            print(f" the row is there: {row}")
+            # print(dict(row))
             return dict(row) if row else None
         
         except Exception as e:
