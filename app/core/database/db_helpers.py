@@ -1,5 +1,5 @@
 import json
-from queries import INSERT_ADVENTURE
+from queries import (INSERT_ADVENTURE, GET_ALL_ADVENTURES)
 from connection import get_connection
 from app.services.adventure import Adventure
 from app.core.logger import get_logger
@@ -21,5 +21,18 @@ def insert_adventure(adventure: Adventure):
                     adventure.last_chosen_option
                 )
             )
+            conn.commit()
     except Exception as e:
-        logger.error(f"Error inserting adventure to database{e}")
+        logger.error(f"Error inserting adventure to database: {e}")
+        try:
+            conn.rollback()
+        except:
+            pass
+        
+def get_adventures_from_db():
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            
+    except Exception as e:
+        logger.error(f"Error fetching adventures from database: {e}")
