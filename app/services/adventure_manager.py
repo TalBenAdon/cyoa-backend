@@ -8,7 +8,6 @@ from app.core.database.connection import get_connection
 from app.models.adventure import AdventureIdName
 from app.core.database.db_helpers import insert_adventure
 from app.core.database.queries import (
-    INSERT_ADVENTURE,
     GET_ADVENTURE_BY_ID
 )
 logger = get_logger(__name__)
