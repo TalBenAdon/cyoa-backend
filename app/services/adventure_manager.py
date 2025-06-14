@@ -6,6 +6,7 @@ from app.core.clients import openrouter_client
 from app.core.logger import get_logger
 from app.core.database.connection import get_connection
 from app.models.adventure import AdventureIdName
+from app.core.database.db_helpers import insert_adventure
 from app.core.database.queries import (
     INSERT_ADVENTURE,
     GET_ADVENTURE_BY_ID
@@ -18,22 +19,15 @@ adventures : Dict[str, Adventure] = {}
 
 def create_adventure(type: str = "fantasy") -> Adventure:
     adventure = Adventure(openrouter_client, type)
-
-    with get_connection() as conn: 
-        cursor = conn.cursor()
-        cursor.execute(
-        INSERT_ADVENTURE,
-            (
-            adventure.id,
-            adventure.name,
-            adventure.current_story_text,
-           json.dumps(adventure.current_story_options or {}),
-            adventure.scene_num,
-            adventure.last_chosen_option
-            )
-        )
+    
+    insert_adventure(adventure)
+    
     print("f from create_adventure: {adventure}")
     return adventure
+
+
+
+
 
 
 
