@@ -19,7 +19,7 @@ adventures : Dict[str, Adventure] = {}
 def create_adventure(type: str = "fantasy") -> Adventure:
     adventure = Adventure(openrouter_client, type)
     
-    insert_adventure(adventure)
+    # insert_adventure(adventure)
     
     print("f from create_adventure: {adventure}")
     return adventure

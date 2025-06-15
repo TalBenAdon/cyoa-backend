@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.core.logger import get_logger
+from app.core.database.db_helpers import insert_adventure
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
@@ -49,7 +50,8 @@ async def start_new_adventure(request: StartAdventure):
         generator = await adventure.start_adventure()
         async for word in generator:
             yield word        
-         
+        
+        insert_adventure(adventure)
         logger.info("/start adventure route completed streaming")
     
     
