@@ -4,7 +4,9 @@ from app.core.logger import get_logger
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
-from app.services.adventure_manager import create_adventure, get_adventure, get_adventures
+from app.services.adventure_manager import (create_adventure,
+                                            get_adventure,
+                                            get_adventures)
 from app.utils.db_tables_call_testing import log_all_table_names
 logger = get_logger(__name__)
 router = APIRouter()
@@ -22,7 +24,7 @@ async def get_adventure_info(adventure_id):
     if not adventure:
         logger.warning("Adventure was not found when asked for info")
         raise AdventureNotFound()
-    
+
     return AdventureInfoResponse(
         id=adventure.id,
         type=adventure.type,

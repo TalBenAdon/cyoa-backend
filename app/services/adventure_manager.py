@@ -4,12 +4,9 @@ from typing import Dict, List
 from app.services.adventure import Adventure
 from app.core.clients import openrouter_client
 from app.core.logger import get_logger
-from app.core.database.connection import get_connection
 from app.models.adventure import AdventureIdName
-from app.core.database.db_helpers import insert_adventure
-from app.core.database.queries import (
-    GET_ADVENTURE_BY_ID
-)
+from app.core.database.db_helpers import insert_adventure, get_adventure_by_id
+
 logger = get_logger(__name__)
 
 
@@ -41,21 +38,7 @@ def get_adventures() -> List[AdventureIdName]:
 
 
 def get_adventure(adventure_id : str) -> Adventure | None:
-    with get_connection() as conn:
-        try:
-            print(f"my id: {adventure_id}")
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute(
-            GET_ADVENTURE_BY_ID,
-            (adventure_id,)
-            )
-            row = cursor.fetchone()
-            row = dict(row)
-            print(f" the row is there: {row}")
-            # print(dict(row))
-            return dict(row) if row else None
-        
-        except Exception as e:
-            logger.error(f"failed fetching requested adventure {e}")
-            return None
+    adventure = get_adventure_by_id(adventure_id)
+    if adventure:
+        return adventure
+    raise

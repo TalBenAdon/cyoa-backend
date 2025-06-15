@@ -21,10 +21,12 @@ CREATE TABLE IF NOT EXISTS adventures_history(
 )
 '''
 
+
 CREATE_ADVENTURES_HISTORY_INDEX = '''
 CREATE INDEX IF NOT EXISTS idx_adventure_history_adventure_id
 ON adventures_history(adventure_id)
 '''
+
 
 INSERT_ADVENTURE = '''
 INSERT INTO adventures(
@@ -41,10 +43,16 @@ adventure_id, scene_text, scene_number, chosen_choice
 VALUES(?,?,?,?) 
 '''
 
+
 GET_ADVENTURE_BY_ID = '''
 SELECT * FROM adventures WHERE id = ?
 '''
 
+
 GET_ALL_ADVENTURES = '''
 SELECT id, name FROM adventures
+'''
+
+GET_ADVENTURE_HISTORY = '''
+SELECT * FROM adventures_history WHERE adventure_id = ?
 '''

@@ -1,6 +1,6 @@
 import json
-from queries import (INSERT_ADVENTURE, GET_ALL_ADVENTURES, GET_ADVENTURE_BY_ID)
-from connection import db_cursor
+from app.core.database.queries import (INSERT_ADVENTURE, GET_ALL_ADVENTURES, GET_ADVENTURE_BY_ID)
+from app.core.database.connection import db_cursor
 from app.services.adventure import Adventure
 from app.core.logger import get_logger
 
@@ -46,8 +46,16 @@ def get_adventure_by_id(adventure_id :str):
                 GET_ADVENTURE_BY_ID,
                 (adventure_id,)
             )
-        row = cursor.fetchone()
+            row = cursor.fetchone()
         return dict(row)
     
     except Exception as e:
          logger.error(f"Error fetching adventure from database: {e}")
+         
+         
+def get_adventure_history_by_id(adventure_id: str):
+    try:
+        
+    except Exception as e:
+         logger.error(f"Error fetching adventure's from database: {e}")
+         
