@@ -18,6 +18,7 @@ def insert_adventure(adventure: Adventure):
                 (
                     adventure.id,
                     adventure.name,
+                    adventure.type,
                     adventure.current_story_text,
                     json.dumps(adventure.current_story_options or {}),
                     adventure.scene_num,
