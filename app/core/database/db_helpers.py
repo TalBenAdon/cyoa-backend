@@ -48,5 +48,6 @@ def get_adventure_by_id(adventure_id :str):
             )
         row = cursor.fetchone()
         return dict(row)
+    
     except Exception as e:
          logger.error(f"Error fetching adventure from database: {e}")
