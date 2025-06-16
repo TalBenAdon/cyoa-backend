@@ -1,5 +1,6 @@
 import json
 from app.core.database.queries import (INSERT_ADVENTURE,
+                                       INSERT_ADVENTURE_HISTORY,
                                        GET_ALL_ADVENTURES,
                                        GET_ADVENTURE_BY_ID,
                                        GET_ADVENTURE_HISTORY)
@@ -29,6 +30,22 @@ def insert_adventure(adventure: Adventure):
     except Exception as e:
         logger.error(f"Error inserting adventure to database: {e}")
 
+
+def insert_adventure_history(adventure_id, adventure_history):
+    try:
+        with db_cursor() as cursor:
+            cursor.execute(
+                INSERT_ADVENTURE_HISTORY,
+                (
+                    adventure_id,
+                    adventure_history["text"],
+                    adventure_history["options"],
+                    adventure_history["scene_number"]
+                 )
+            )
+        
+    except Exception as e:
+        logger.error(f"Error inserting adventure history to database: {e}")
         
 def get_adventures_from_db():
     try:

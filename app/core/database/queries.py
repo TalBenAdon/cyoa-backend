@@ -15,8 +15,9 @@ CREATE TABLE IF NOT EXISTS adventures_history(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     adventure_id TEXT NOT NULL,
     scene_text TEXT NOT NULL,
+    options TEXT NOT NULL,
+    chosen_option TEXT,
     scene_number INTEGER,
-    chosen_choise TEXT,
     timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (adventure_id) REFERENCES adventures(id)
 )
@@ -39,9 +40,9 @@ VALUES(?,?,?,?,?,?,?)
 
 INSERT_ADVENTURE_HISTORY = '''
 INSERT INTO adventures_history(
-adventure_id, scene_text, scene_number, chosen_choice
+adventure_id, scene_text, scene_number
 )
-VALUES(?,?,?,?) 
+VALUES(?,?,?) 
 '''
 
 

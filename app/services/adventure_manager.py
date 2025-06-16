@@ -2,6 +2,7 @@ import json
 import sqlite3
 from typing import Dict, List
 from app.services.adventure_snapshot import AdventureSnapshot
+from app.utils.create_ai_context_from_db import create_ai_context_from_db
 from app.services.adventure import Adventure
 from app.core.clients import openrouter_client
 from app.core.logger import get_logger
@@ -13,18 +14,12 @@ from app.core.database.db_helpers import (insert_adventure,
 logger = get_logger(__name__)
 
 
-# temporary adventures data list
-adventures : Dict[str, Adventure] = {}
 
 def create_adventure(type: str = "fantasy") -> Adventure:
     adventure = Adventure(openrouter_client, type)
     
-    # insert_adventure(adventure)
-    
-    print("f from create_adventure: {adventure}")
+    print(f"from create_adventure: {adventure}")
     return adventure
-
-
 
 
 
@@ -38,9 +33,7 @@ def get_adventures() -> List[AdventureIdName]:
 
 
 
-
-
-def get_adventure_with_history(adventure_id : str) -> AdventureSnapshot | None:
+def get_adventure_with_history_snapshot(adventure_id : str) -> AdventureSnapshot | None:
     adventure_row = get_adventure_by_id(adventure_id)
     if not adventure_row:
         raise
@@ -58,4 +51,6 @@ def get_adventure_with_history(adventure_id : str) -> AdventureSnapshot | None:
     
  
     
-    
+def get_full_adventure(adventure_id : str):
+    adventure_history_rows = get_adventure_history_by_id(adventure_id)
+    create_ai_context_from_db(adventure_history_rows)
