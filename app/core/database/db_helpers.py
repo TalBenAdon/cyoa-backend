@@ -57,7 +57,21 @@ def get_adventures_from_db():
           
     except Exception as e:
         logger.error(f"Error fetching adventures from database: {e}")
-        
+
+
+def return_formatted_history(history_array_rows):
+    formatted_history = []
+    for row in history_array_rows:
+        try:
+            formatted_history.append({
+                "scene_text": row["scene_text"],
+                "options": json.loads(row["options"]),
+                "scene_number": row["scene_number"]
+            })
+        except (KeyError, json.JSONDecodeError) as e:
+            logger.error(f"Error formatting history entries: {e}")
+    return formatted_history
+
         
 def get_adventure_by_id(adventure_id :str):
     try:

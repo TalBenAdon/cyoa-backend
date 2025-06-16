@@ -9,7 +9,8 @@ from app.core.logger import get_logger
 from app.models.adventure import AdventureIdName
 from app.core.database.db_helpers import (insert_adventure,
                                           get_adventure_by_id,
-                                          get_adventure_history_by_id)
+                                          get_adventure_history_by_id,
+                                          return_formatted_history)
 
 logger = get_logger(__name__)
 
@@ -39,12 +40,14 @@ def get_adventure_with_history_snapshot(adventure_id : str) -> AdventureSnapshot
         raise
     
     adventure_history_rows = get_adventure_history_by_id(adventure_id)
+    formatted_history = return_formatted_history(adventure_history_rows)
     
+    print(f" my history rows{adventure_history_rows}")
     adventure_snapshot = AdventureSnapshot(
         adventure_id = adventure_row["id"],
         type = adventure_row["type"],
         scene_number = adventure_row["current_scene_number"],
-        history = adventure_history_rows
+        history = formatted_history
     )
     
     return adventure_snapshot
