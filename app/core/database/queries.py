@@ -40,9 +40,9 @@ VALUES(?,?,?,?,?,?,?)
 
 INSERT_ADVENTURE_HISTORY = '''
 INSERT INTO adventures_history(
-adventure_id, scene_text, scene_number
+adventure_id, scene_text, options, scene_number
 )
-VALUES(?,?,?) 
+VALUES(?,?,?,?) 
 '''
 
 

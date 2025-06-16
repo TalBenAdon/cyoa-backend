@@ -22,7 +22,7 @@ def insert_adventure(adventure: Adventure):
                     adventure.type,
                     adventure.current_story_text,
                     json.dumps(adventure.current_story_options or {}),
-                    adventure.scene_num,
+                    adventure.scene_number,
                     adventure.last_chosen_option
                 )
             )
@@ -31,7 +31,8 @@ def insert_adventure(adventure: Adventure):
         logger.error(f"Error inserting adventure to database: {e}")
 
 
-def insert_adventure_history(adventure_id, adventure_history):
+def insert_adventure_history(adventure_id: str, adventure_history: dict):
+    
     try:
         with db_cursor() as cursor:
             cursor.execute(
@@ -39,14 +40,15 @@ def insert_adventure_history(adventure_id, adventure_history):
                 (
                     adventure_id,
                     adventure_history["text"],
-                    adventure_history["options"],
-                    adventure_history["scene_number"]
+                    json.dumps(adventure_history["options"]),
+                    adventure_history["scene_number"],
                  )
             )
         
     except Exception as e:
         logger.error(f"Error inserting adventure history to database: {e}")
-        
+
+
 def get_adventures_from_db():
     try:
         with db_cursor() as cursor:
