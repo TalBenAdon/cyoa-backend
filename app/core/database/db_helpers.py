@@ -26,13 +26,11 @@ def insert_adventure(adventure: Adventure):
                     adventure.last_chosen_option
                 )
             )
-
     except Exception as e:
         logger.error(f"Error inserting adventure to database: {e}")
 
 
 def insert_adventure_history(adventure_id: str, adventure_history: dict):
-    
     try:
         with db_cursor() as cursor:
             cursor.execute(
@@ -44,7 +42,6 @@ def insert_adventure_history(adventure_id: str, adventure_history: dict):
                     adventure_history["scene_number"],
                  )
             )
-        
     except Exception as e:
         logger.error(f"Error inserting adventure history to database: {e}")
 
@@ -56,8 +53,8 @@ def get_adventures_from_db():
                GET_ALL_ADVENTURES
            )
            rows = cursor.fetchall()
-           return [dict(row) for row in rows]
-            
+           return [dict(row) for row in rows] 
+          
     except Exception as e:
         logger.error(f"Error fetching adventures from database: {e}")
         

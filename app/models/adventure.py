@@ -14,9 +14,9 @@ class AdvanceAdventure(BaseModel):
 
 
 class HistoryEntry(BaseModel):
-    text: str
+    scene_text: str
     options:List[str]
-    scene:int
+    scene_number:int
 
 class AdventureInfoResponse(BaseModel):
     id: str

@@ -18,10 +18,11 @@ async def return_adventures_ids():
 
 
 
-@router.get("/info/{adventure_id}", response_model=AdventureInfoResponse)
+@router.get("/info/{adventure_id}", response_model=AdventureInfoResponse) #TODO adjust the return of history
 async def get_adventure_info(adventure_id):
     # log_all_table_names()
     adventure = get_adventure_with_history_snapshot(adventure_id)
+    print(f"this is the adventure amalgam i created: {adventure}")
     if not adventure:
         logger.warning("Adventure was not found when asked for info")
         raise AdventureNotFound()
