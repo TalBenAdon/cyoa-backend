@@ -14,9 +14,13 @@ class AdvanceAdventure(BaseModel):
 
 
 class HistoryEntry(BaseModel):
-    text: str
+    scene_text: str = Field(alias="sceneText")
     options:List[str]
-    scene:int
+    scene_number:int = Field(alias="sceneNumber")
+
+    model_config = {
+        "populate_by_name" : True
+    }
 
 class AdventureInfoResponse(BaseModel):
     id: str

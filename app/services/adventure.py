@@ -7,7 +7,7 @@ class Adventure:
         self.id = str(uuid.uuid4())
         self.client = client
         #should generate some starting story and decisions when initialized with start
-        self.scene_num = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
+        self.current_scene_number = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
         # maybe change status to numbers? 0 is start, and the story progresses by numbers of "scenes" generated
         self.type = type
         self.name = "" #adventure needs a short name for UI purposes
@@ -20,7 +20,15 @@ class Adventure:
 
 
 
-
+    @classmethod
+    def from_db(cls, client, data: dict) -> "Adventure":
+        adventure = cls(client, data["type"])
+        adventure.id = data["id"]
+        adventure.name = data["name"]
+        adventure.current_scene_number = data["current_scene_number"]
+        adventure.current_story_text = data["current_story_text"]
+        adventure.last_chosen_option = data["last_chosen_option"]
+        adventure.current_story_options = data["current_story_options"]
 
 
     async def start_adventure(self):
@@ -66,7 +74,7 @@ class Adventure:
 
 
     def advance_status(self):
-        self.scene_num += 1
+        self.current_scene_number += 1
     
     
 
@@ -93,7 +101,7 @@ class Adventure:
         # Extract content inside <text>...</text/>
         print(response)
         self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
-        
+        print(f"parsed class message context: {self.ai_message_context}")
         if not self.name:
             name_match = re.search(r"<name>\s*(.*?)\s*</?name\s*/?>", response, re.DOTALL)
             self.name = name_match.group(1).strip() if name_match else ""
@@ -108,7 +116,7 @@ class Adventure:
         self.current_story_options = options
         
         self.advance_status()
-        history_dict = {"text": adventure_text, "options": options, "scene": self.scene_num}
+        history_dict = {"text": adventure_text, "options": options, "scene_number": self.current_scene_number}
         
         self.history.append(history_dict)
         
@@ -125,7 +133,7 @@ class Adventure:
         "id": self.id,
         "name": self.name,
         "type": self.type,
-        "scene_number": self.scene_num,
+        "current_scene_number": self.current_scene_number,
         "history": self.history,
         }
 
@@ -136,7 +144,7 @@ class Adventure:
 
 
     def is_starting_scene(self): #will be used to generate starting scene from the AI in the api code 
-        return self.scene_num == 0
+        return self.current_scene_number == 0
 
     
     
