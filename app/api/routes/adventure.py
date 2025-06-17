@@ -18,7 +18,7 @@ async def return_adventures_ids():
 
 
 
-@router.get("/info/{adventure_id}", response_model=AdventureInfoResponse) #TODO adjust the return of history
+@router.get("/info/{adventure_id}", response_model=AdventureInfoResponse)
 async def get_adventure_info(adventure_id):
     adventure = get_adventure_with_history_snapshot(adventure_id)
     if not adventure:
