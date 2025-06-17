@@ -51,7 +51,9 @@ async def start_new_adventure(request: StartAdventure):
             yield word        
         
         insert_adventure(adventure)
+        logger.info("New adventure has been inserted to database")
         insert_adventure_history(adventure.id, adventure.history[-1])
+        logger.info("New adventure history has been inserted to database")
         
         logger.info("/start adventure route completed streaming")
     
