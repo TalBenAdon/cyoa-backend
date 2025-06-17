@@ -1,10 +1,14 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.core.logger import get_logger
+from app.core.database.db_helpers import insert_adventure, insert_adventure_history
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
-from app.services.adventure_manager import create_adventure, get_adventure, get_adventures
+from app.services.adventure_manager import (create_adventure,
+                                            get_adventure_with_history_snapshot,
+                                            get_adventures)
+
 logger = get_logger(__name__)
 router = APIRouter()
 
@@ -14,9 +18,9 @@ async def return_adventures_ids():
 
 
 
-@router.get("/info/{adventure_id}", response_model=AdventureInfoResponse)
+@router.get("/info/{adventure_id}", response_model=AdventureInfoResponse) #TODO adjust the return of history
 async def get_adventure_info(adventure_id):
-    adventure = get_adventure(adventure_id)
+    adventure = get_adventure_with_history_snapshot(adventure_id)
     if not adventure:
         logger.warning("Adventure was not found when asked for info")
         raise AdventureNotFound()
@@ -24,7 +28,7 @@ async def get_adventure_info(adventure_id):
     return AdventureInfoResponse(
         id=adventure.id,
         type=adventure.type,
-        scene_number=adventure.scene_num,
+        scene_number=adventure.scene_number,
         history=adventure.history,
     )
 
@@ -45,6 +49,12 @@ async def start_new_adventure(request: StartAdventure):
         generator = await adventure.start_adventure()
         async for word in generator:
             yield word        
+        
+        insert_adventure(adventure)
+        logger.info("New adventure has been inserted to database")
+        insert_adventure_history(adventure.id, adventure.history[-1])
+        logger.info("New adventure history has been inserted to database")
+        
         logger.info("/start adventure route completed streaming")
     
     

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.logger import get_logger
 from app.api import api_router
-from app.core.init_db import init_db
+from app.core.database.schema import init_db
 logger = get_logger(__name__)
 
 init_db()
