@@ -18,8 +18,6 @@ class Adventure:
         self.current_story_options = [] #current story options (send to USER)
 
 
-
-
     @classmethod
     def from_db(cls, client, data: dict) -> "Adventure":
         adventure = cls(client, data["type"])
@@ -31,42 +29,13 @@ class Adventure:
         adventure.current_story_options = data["current_story_options"]
 
 
-    async def start_adventure(self):
-        system_message = {
-            "role": "system",
-            "content":f"""
-            You are an experienced storyteller, like a D&D game master. You will adjust your storytelling style based on the type of adventure. 
-            This adventure's type is: "{self.type}".
+    async def start_adventure(self, system_message):
             
-         Your responses must be formatted using the following tags:
-
-    - In the **first reply only**, include the title of the adventure using the <name> tag:
-        <name>
-        The adventure's name
-        </name>
-
-    - Every reply (including the first) must include the following:
-        <text>
-        Your adventure narration here
-        </text>
-        <option1>
-        Action the user may take
-        </option1>
-        <option2>
-        Action the user may take
-        </option2>
-        <option3>
-        Action the user may take
-        </option3>
-    """
-            }
-            
-        
         user_message = {"role": "user", "content":"Start my adventure"}
         
-        self.ai_message_context = [system_message, user_message]
+        ai_message_context = [system_message, user_message]
         
-        return self.client.chat_with_ai(self.ai_message_context, on_complete=self.parse_adventure_response)
+        return self.client.chat_with_ai(ai_message_context, on_complete=self.parse_adventure_response)
 
 
 
@@ -81,10 +50,10 @@ class Adventure:
 
 
 
-    async def advance_scene(self, user_choice):
+    async def advance_scene(self, user_choice, message_context: list[dict]):
         print(user_choice)
-        user_message = {"role": "user", "content": f"{user_choice}"}
-        self.ai_message_context.append(user_message)
+
+        message_context.append({"role": "user", "content": f"{user_choice}"})
         
         return self.client.chat_with_ai(self.ai_message_context, on_complete=self.parse_adventure_response)
 

@@ -51,9 +51,28 @@ def get_adventure_with_history_snapshot(adventure_id : str) -> AdventureSnapshot
     )
     
     return adventure_snapshot
-    
  
     
-def get_full_adventure(adventure_id : str):
+def get_adventure(adventure_id : str):
+
+    adventure_row = get_adventure_by_id(adventure_id)
     adventure_history_rows = get_adventure_history_by_id(adventure_id)
+
+    current_scene_num = adventure_row["current_scene_number"]
+    current_scene_history = adventure_history_rows[current_scene_num]
+
     create_ai_context_from_db(adventure_history_rows)
+
+    data = {
+        "id": adventure_id,
+        "name": adventure_row["name"],
+        "type": adventure_row["type"],
+        "current_scene_number":adventure_row["current_scene_number"],
+        "current_story_text": current_scene_history["scene_text"],
+        "last_chosen_option": current_scene_history["chosen_option"],
+        "current_story_options": current_scene_history["options"]
+    }
+
+    adventure = Adventure.from_db(openrouter_client,data)
+
+

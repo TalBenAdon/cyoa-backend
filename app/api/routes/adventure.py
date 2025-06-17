@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
+from app.utils.get_system_message import get_system_message
 from app.core.logger import get_logger
 from app.core.database.db_helpers import insert_adventure, insert_adventure_history
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
@@ -7,7 +8,8 @@ from app.exceptions.HasExistingAdventureException import HasExistingAdventureExc
 from app.exceptions.AdventureNotFound import AdventureNotFound
 from app.services.adventure_manager import (create_adventure,
                                             get_adventure_with_history_snapshot,
-                                            get_adventures)
+                                            get_adventures,
+                                            get_adventure)
 
 logger = get_logger(__name__)
 router = APIRouter()
@@ -43,10 +45,10 @@ async def get_adventure_info(adventure_id):
             }})
 async def start_new_adventure(request: StartAdventure):
     adventure = create_adventure(request.type)
-
+    system_message = get_system_message(request.type)
         
     async def event_generator():
-        generator = await adventure.start_adventure()
+        generator = await adventure.start_adventure(system_message)
         async for word in generator:
             yield word        
         
