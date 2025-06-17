@@ -20,10 +20,7 @@ def insert_adventure(adventure: Adventure):
                     adventure.id,
                     adventure.name,
                     adventure.type,
-                    adventure.current_story_text,
-                    json.dumps(adventure.current_story_options or {}),
-                    adventure.scene_number,
-                    adventure.last_chosen_option
+                    adventure.current_scene_number
                 )
             )
     except Exception as e:
