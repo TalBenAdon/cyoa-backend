@@ -7,7 +7,7 @@ from app.services.adventure import Adventure
 from app.core.clients import openrouter_client
 from app.core.logger import get_logger
 from app.models.adventure import AdventureIdName
-from app.core.database.db_helpers import (insert_adventure,
+from app.core.database.db_helpers import (
                                           get_adventure_by_id,
                                           get_adventure_history_by_id,
                                           return_formatted_history)
@@ -28,7 +28,7 @@ def create_adventure(type: str = "fantasy") -> Adventure:
 
 
 def get_adventures() -> List[AdventureIdName]:
-    return [ AdventureIdName(adventure_id = key, adventure_name= value.name) for key, value in adventures.items() ]
+    return [ AdventureIdName(adventure_id = key, adventure_name= value.name) for key, value in adventures.items() ] #TODO update to gather from db
     
 
 
@@ -53,7 +53,7 @@ def get_adventure_with_history_snapshot(adventure_id : str) -> AdventureSnapshot
     return adventure_snapshot
  
     
-def get_adventure(adventure_id : str):
+def get_adventure(adventure_id : str):  
 
     adventure_row = get_adventure_by_id(adventure_id)
     adventure_history_rows = get_adventure_history_by_id(adventure_id)
@@ -61,7 +61,7 @@ def get_adventure(adventure_id : str):
     current_scene_num = adventure_row["current_scene_number"]
     current_scene_history = adventure_history_rows[current_scene_num]
 
-    create_ai_context_from_db(adventure_history_rows)
+    create_ai_context_from_db(adventure_history_rows) #TODO create the context
 
     data = {
         "id": adventure_id,
@@ -73,6 +73,6 @@ def get_adventure(adventure_id : str):
         "current_story_options": current_scene_history["options"]
     }
 
-    adventure = Adventure.from_db(openrouter_client,data)
+    adventure = Adventure.from_db(openrouter_client,data) #TODO return the adventure and see if its usable for other api calls
 
 
