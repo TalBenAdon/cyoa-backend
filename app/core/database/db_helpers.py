@@ -102,7 +102,7 @@ def return_formatted_history(history_array_rows):
     return formatted_history
 
         
-def get_adventure_by_id(adventure_id :str):
+def get_adventure_by_id(adventure_id :str):  #TODO as the app progresses check if required by itself
     try:
         with db_cursor() as cursor:
             cursor.execute(
@@ -114,9 +114,38 @@ def get_adventure_by_id(adventure_id :str):
     
     except Exception as e:
          logger.error(f"Error fetching adventure from database: {e}")
+             
+         
+def get_adventure_with_history_by_id(adventure_id):
+    try:
+        with db_cursor() as cursor:
+            cursor.execute(
+                GET_ADVENTURE_BY_ID,
+                (adventure_id,)
+            )
+            row = cursor.fetchone()
+            if not row:
+                return None #TODO can raise a different error later 
+            
+            adventure_row = dict(row)
+            
+            cursor.execute(
+                GET_ADVENTURE_HISTORY,
+                (adventure_id,)
+            )
+            adventure_history_rows = [dict(row) for row in cursor.fetchall()]
+            
+            return {
+                "adventure": adventure_row,
+                "history": adventure_history_rows
+            }
+            
+    except Exception as e:
+        logger.error(f"failed to fetch adventure and adventure history: {e}")
+        return None #TODO can raise a different error later 
          
          
-def get_adventure_history_by_id(adventure_id: str):
+def get_adventure_history_by_id(adventure_id: str): #TODO as the app progresses check if required by itself
     try:
         with db_cursor() as cursor:
             cursor.execute(
