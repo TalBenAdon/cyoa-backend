@@ -11,11 +11,27 @@ from app.core.logger import get_logger
 logger = get_logger(__name__)
 
 
-def insert_adventure(adventure: Adventure):
+# def insert_adventure(adventure: Adventure):
+#     try:
+#         with db_cursor() as cursor:
+#             cursor.execute(
+#                 INSERT_ADVENTURE,
+#                 (
+#                     adventure.id,
+#                     adventure.name,
+#                     adventure.type,
+#                     adventure.current_scene_number
+#                 )
+#             )
+#     except Exception as e:
+#         logger.error(f"Error inserting adventure to database: {e}")
+        
+        
+def save_adventure(adventure: Adventure):
     try:
         with db_cursor() as cursor:
             cursor.execute(
-                INSERT_ADVENTURE,
+                     INSERT_ADVENTURE,
                 (
                     adventure.id,
                     adventure.name,
@@ -23,24 +39,40 @@ def insert_adventure(adventure: Adventure):
                     adventure.current_scene_number
                 )
             )
-    except Exception as e:
-        logger.error(f"Error inserting adventure to database: {e}")
-
-
-def insert_adventure_history(adventure_id: str, adventure_history: dict):
-    try:
-        with db_cursor() as cursor:
-            cursor.execute(
-                INSERT_ADVENTURE_HISTORY,
+            
+            if adventure.history:
+                latest = adventure.history[-1]
+                cursor.execute(
+                    INSERT_ADVENTURE_HISTORY,
                 (
-                    adventure_id,
-                    adventure_history["text"],
-                    json.dumps(adventure_history["options"]),
-                    adventure_history["scene_number"],
+                    adventure.id,
+                    latest["text"],
+                    json.dumps(latest["options"]),
+                    latest["scene_number"],
                  )
             )
+        
+        logger.info("adventure and its history inserted")
+        
     except Exception as e:
-        logger.error(f"Error inserting adventure history to database: {e}")
+        logger.error(f"Error saving adventure:{e}")
+    
+
+
+# def insert_adventure_history(adventure_id: str, adventure_history: dict):
+#     try:
+#         with db_cursor() as cursor:
+#             cursor.execute(
+#                 INSERT_ADVENTURE_HISTORY,
+#                 (
+#                     adventure_id,
+#                     adventure_history["text"],
+#                     json.dumps(adventure_history["options"]),
+#                     adventure_history["scene_number"],
+#                  )
+#             )
+#     except Exception as e:
+#         logger.error(f"Error inserting adventure history to database: {e}")
 
 
 def get_adventures_from_db():
