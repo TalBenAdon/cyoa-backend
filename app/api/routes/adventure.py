@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.utils.get_system_message import get_system_message
 from app.core.logger import get_logger
-from app.core.database.db_helpers import insert_adventure, insert_adventure_history
+from app.core.database.db_helpers import save_adventure
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
@@ -52,13 +52,9 @@ async def start_new_adventure(request: StartAdventure):
         async for word in generator:
             yield word        
         
-        insert_adventure(adventure)
-        logger.info("New adventure has been inserted to database")
-        insert_adventure_history(adventure.id, adventure.history[-1])
-        logger.info("New adventure history has been inserted to database")
+        save_adventure(adventure)
         
         logger.info("/start adventure route completed streaming")
-    
     
     return StreamingResponse(event_generator(), media_type="text/plain", headers={"X-Adventure-ID": adventure.id})
 
