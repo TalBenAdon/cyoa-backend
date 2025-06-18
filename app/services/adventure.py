@@ -55,7 +55,7 @@ class Adventure:
 
         message_context.append({"role": "user", "content": f"{user_choice}"})
         
-        return self.client.chat_with_ai(self.ai_message_context, on_complete=self.parse_adventure_response)
+        return self.client.chat_with_ai(message_context, on_complete=self.parse_adventure_response)
 
 
 
@@ -69,11 +69,11 @@ class Adventure:
     def parse_adventure_response(self, response: str):
         # Extract content inside <text>...</text/>
         print(response)
-        self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
-        print(f"parsed class message context: {self.ai_message_context}")
+
         if not self.name:
             name_match = re.search(r"<name>\s*(.*?)\s*</?name\s*/?>", response, re.DOTALL)
             self.name = name_match.group(1).strip() if name_match else ""
+            
         
         text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""
