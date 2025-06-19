@@ -65,8 +65,6 @@ def get_adventure(adventure_id : str)-> Adventure:
     
     current_scene_history = adventure_history_rows[current_scene_num-1]
 
-    adventure_ai_message_context = create_ai_context_from_db(adventure_row["type"], adventure_history_rows) 
-
     data = {
         "id": adventure_id,
         "name": adventure_row["name"],
@@ -77,8 +75,8 @@ def get_adventure(adventure_id : str)-> Adventure:
         "current_story_options": current_scene_history["options"]
     }
 
-    adventure = Adventure.from_db(openrouter_client,data) #TODO return the adventure and see if its usable for other api calls
-    print(f"is this None ????{adventure}")
-    # return adventure
+    adventure = Adventure.from_db(openrouter_client,data) 
+   
+    return adventure
 
 
