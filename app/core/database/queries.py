@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS adventures_history(
     scene_text TEXT NOT NULL,
     options TEXT NOT NULL,
     chosen_option TEXT,
-    scene_number INTEGER,
+    scene_number INTEGER NOT NULL,
     timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (adventure_id) REFERENCES adventures(id)
 )
