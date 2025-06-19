@@ -1,8 +1,8 @@
 from app.utils.get_system_message import get_system_message
-def create_ai_context_from_db(type, history_rows):
+
+def create_ai_context_from_db(type:str, history_rows:list) -> list:
     ai_context = [get_system_message(type)]
     for row in history_rows:
-        
         assistant_content = row["scene_text"]
         user_content = row.get("chosen_option")
         
@@ -10,7 +10,6 @@ def create_ai_context_from_db(type, history_rows):
             "role": "assistant",
             "content": assistant_content
         })
-        
         
        
         if user_content is None:

@@ -27,6 +27,7 @@ class Adventure:
         adventure.current_story_text = data["current_story_text"]
         adventure.last_chosen_option = data["last_chosen_option"]
         adventure.current_story_options = data["current_story_options"]
+        adventure.history = data["history"]
         return adventure
 
     async def start_adventure(self, system_message):

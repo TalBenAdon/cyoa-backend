@@ -2,7 +2,6 @@ import json
 import sqlite3
 from typing import Dict, List
 from app.services.adventure_snapshot import AdventureSnapshot
-from app.utils.create_ai_context_from_db import create_ai_context_from_db
 from app.services.adventure import Adventure
 from app.core.clients import openrouter_client
 from app.core.logger import get_logger
@@ -72,7 +71,8 @@ def get_adventure(adventure_id : str)-> Adventure:
         "current_scene_number":adventure_row["current_scene_number"],
         "current_story_text": current_scene_history["scene_text"],
         "last_chosen_option": current_scene_history["chosen_option"],
-        "current_story_options": current_scene_history["options"]
+        "current_story_options": current_scene_history["options"],
+        "history": adventure_history_rows
     }
 
     adventure = Adventure.from_db(openrouter_client,data) 

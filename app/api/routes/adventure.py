@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 from app.utils.get_system_message import get_system_message
 from app.core.logger import get_logger
 from app.core.database.db_helpers import save_adventure
+from app.utils.create_ai_context_from_db import create_ai_context_from_db
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
@@ -46,7 +47,7 @@ async def get_adventure_info(adventure_id):
 async def start_new_adventure(request: StartAdventure):
     adventure = create_adventure(request.type)
     system_message = get_system_message(request.type)
-        
+ 
     async def event_generator():
         generator = await adventure.start_adventure(system_message)
         async for word in generator:
@@ -69,7 +70,7 @@ async def start_new_adventure(request: StartAdventure):
             }})
 async def advance_adventure(adventure_id, request : AdvanceAdventure):
     adventure = get_adventure(adventure_id)
-    # print(adventure.id)
+    message_context_list = create_ai_context_from_db(adventure.type, adventure.history)
     if not adventure:
         logger.warning("Adventure was not found when choice was sent")
         raise AdventureNotFound()
