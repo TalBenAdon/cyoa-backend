@@ -69,6 +69,7 @@ async def start_new_adventure(request: StartAdventure):
             }})
 async def advance_adventure(adventure_id, request : AdvanceAdventure):
     adventure = get_adventure(adventure_id)
+    # print(adventure.id)
     if not adventure:
         logger.warning("Adventure was not found when choice was sent")
         raise AdventureNotFound()
