@@ -55,7 +55,7 @@ class Adventure:
         print(user_choice)
 
         message_context.append({"role": "user", "content": f"{user_choice}"})
-        
+        self.last_chosen_option = user_choice
         return self.client.chat_with_ai(message_context, on_complete=self.parse_adventure_response)
 
 

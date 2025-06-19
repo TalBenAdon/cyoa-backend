@@ -48,6 +48,14 @@ SET chosen_option = ?
 WHERE adventure_id = ? AND scene_number = ?
 '''
 
+
+UPDATE_ADVENTURE_SCENE_NUMBER = '''
+UPDATE adventures
+SET current_scene_number = ?
+WHERE adventure_id = ?
+'''
+
+
 GET_ADVENTURE_BY_ID = '''
 SELECT * FROM adventures WHERE id = ?
 '''

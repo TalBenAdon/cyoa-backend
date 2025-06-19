@@ -4,7 +4,8 @@ from app.core.database.queries import (INSERT_ADVENTURE,
                                        GET_ALL_ADVENTURES,
                                        GET_ADVENTURE_BY_ID,
                                        GET_ADVENTURE_HISTORY,
-                                       UPDATE_HISTORY_CHOSEN_OPTION)
+                                       UPDATE_HISTORY_CHOSEN_OPTION,
+                                       UPDATE_ADVENTURE_SCENE_NUMBER)
 from app.core.database.connection import db_cursor
 from app.services.adventure import Adventure
 from app.core.logger import get_logger
@@ -61,7 +62,7 @@ def save_new_adventure(adventure: Adventure):
 
 def save_and_update_adventure(adventure: Adventure):
     if not adventure.last_chosen_option:
-        raise Exception #TODO raise an exception for when theres no last_chosen_option
+        raise Exception("No last option within adventure") #TODO raise an exception for when theres no last_chosen_option
     try:
         with db_cursor() as cursor:
             cursor.execute(
@@ -77,15 +78,25 @@ def save_and_update_adventure(adventure: Adventure):
             cursor.execute(
                 INSERT_ADVENTURE_HISTORY,
                 (
+                    adventure.id,
                     adventure.current_story_text,
                     json.dumps(adventure.current_story_options),
                     adventure.current_scene_number,
                 )
             )
             
+            
+            cursor.execute(
+                UPDATE_ADVENTURE_SCENE_NUMBER,
+                (
+                    adventure.id,
+                    adventure.current_scene_number
+                )
+            )
+            
         logger.info("Updated adventure and saved adventure proggression")    
     except Exception as e:
-        logger.error("Could not update new adventure advancement")
+        logger.error(f"Could not update new adventure advancement:{e}")
 
 # def insert_adventure_history(adventure_id: str, adventure_history: dict):
 #     try:
