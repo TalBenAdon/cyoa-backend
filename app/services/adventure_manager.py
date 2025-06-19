@@ -53,13 +53,17 @@ def get_adventure_with_history_snapshot(adventure_id : str) -> AdventureSnapshot
     return adventure_snapshot
  
     
-def get_adventure(adventure_id : str):  
+def get_adventure(adventure_id : str)-> Adventure:  
 
     adventure_row = get_adventure_by_id(adventure_id)
     adventure_history_rows = get_adventure_history_by_id(adventure_id)
 
     current_scene_num = adventure_row["current_scene_number"]
-    current_scene_history = adventure_history_rows[current_scene_num]
+
+    if current_scene_num != adventure_history_rows[-1]["scene_number"]:
+        raise Exception #TODO create an error for when current scene num doesnt match the last history scene
+    
+    current_scene_history = adventure_history_rows[current_scene_num-1]
 
     create_ai_context_from_db(adventure_history_rows) #TODO create the context
 
