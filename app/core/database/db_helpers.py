@@ -82,6 +82,7 @@ def save_and_update_adventure(adventure: Adventure):
                     adventure.current_scene_number,
                 )
             )
+            
         logger.info("Updated adventure and saved adventure proggression")    
     except Exception as e:
         logger.error("Could not update new adventure advancement")

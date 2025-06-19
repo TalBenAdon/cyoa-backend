@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.utils.get_system_message import get_system_message
 from app.core.logger import get_logger
-from app.core.database.db_helpers import save_new_adventure
+from app.core.database.db_helpers import save_new_adventure, save_and_update_adventure
 from app.utils.create_ai_context_from_db import create_ai_context_from_db
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
@@ -81,6 +81,8 @@ async def advance_adventure(adventure_id, request : AdvanceAdventure):
                 generator = await adventure.advance_scene(request.choice, message_context_list)
                 async for word in generator:
                     yield word        
+                    
+                save_and_update_adventure(adventure)
                 logger.info("/choice adventure route completed")
             except Exception as e:
                 logger.error(f"streaming failed: {e}")
