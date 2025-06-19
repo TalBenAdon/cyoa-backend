@@ -89,8 +89,8 @@ def save_and_update_adventure(adventure: Adventure):
             cursor.execute(
                 UPDATE_ADVENTURE_SCENE_NUMBER,
                 (
-                    adventure.id,
-                    adventure.current_scene_number
+                    adventure.current_scene_number,
+                    adventure.id
                 )
             )
             
