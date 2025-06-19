@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 import re
 import uuid
 
@@ -13,8 +13,8 @@ class Adventure:
         self.name = "" #adventure needs a short name for UI purposes
         self.history = [] #need to decide how to define adventure history
 
-        self.current_story_text = None #current story text we just got from the ai (send to USER)
-        self.last_chosen_option = None
+        self.current_story_text :Optional[str]= None  #current story text we just got from the ai (send to USER)
+        self.last_chosen_option :Optional[str] = None
         self.current_story_options = [] #current story options (send to USER)
 
 
@@ -51,7 +51,7 @@ class Adventure:
 
 
 
-    async def advance_scene(self, user_choice, message_context: list[dict]):
+    async def advance_scene(self, user_choice:str, message_context: list[dict]):
         print(user_choice)
 
         message_context.append({"role": "user", "content": f"{user_choice}"})
@@ -67,7 +67,7 @@ class Adventure:
 
 
 
-    def parse_adventure_response(self, response: str):
+    def parse_adventure_response(self, response: str): #TODO overhaul system message and regex accordingly, might change to just normal json response for easier ai proccessing
         # Extract content inside <text>...</text/>
         print(response)
 

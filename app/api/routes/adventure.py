@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.utils.get_system_message import get_system_message
 from app.core.logger import get_logger
-from app.core.database.db_helpers import save_adventure
+from app.core.database.db_helpers import save_new_adventure
 from app.utils.create_ai_context_from_db import create_ai_context_from_db
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
@@ -53,7 +53,7 @@ async def start_new_adventure(request: StartAdventure):
         async for word in generator:
             yield word        
         
-        save_adventure(adventure)
+        save_new_adventure(adventure)
         
         logger.info("/start adventure route completed streaming")
     
@@ -78,7 +78,7 @@ async def advance_adventure(adventure_id, request : AdvanceAdventure):
     if not adventure.is_starting_scene():
         async def event_generator():
             try:
-                generator = await adventure.advance_scene(request.choice)
+                generator = await adventure.advance_scene(request.choice, message_context_list)
                 async for word in generator:
                     yield word        
                 logger.info("/choice adventure route completed")

@@ -3,7 +3,8 @@ from app.core.database.queries import (INSERT_ADVENTURE,
                                        INSERT_ADVENTURE_HISTORY,
                                        GET_ALL_ADVENTURES,
                                        GET_ADVENTURE_BY_ID,
-                                       GET_ADVENTURE_HISTORY)
+                                       GET_ADVENTURE_HISTORY,
+                                       UPDATE_HISTORY_CHOSEN_OPTION)
 from app.core.database.connection import db_cursor
 from app.services.adventure import Adventure
 from app.core.logger import get_logger
@@ -27,7 +28,7 @@ logger = get_logger(__name__)
 #         logger.error(f"Error inserting adventure to database: {e}")
         
         
-def save_adventure(adventure: Adventure):
+def save_new_adventure(adventure: Adventure):
     try:
         with db_cursor() as cursor:
             cursor.execute(
@@ -58,6 +59,32 @@ def save_adventure(adventure: Adventure):
         logger.error(f"Error saving adventure:{e}")
     
 
+def save_and_update_adventure(adventure: Adventure):
+    if not adventure.last_chosen_option:
+        raise Exception #TODO raise an exception for when theres no last_chosen_option
+    try:
+        with db_cursor() as cursor:
+            cursor.execute(
+                UPDATE_HISTORY_CHOSEN_OPTION,
+                (
+                    adventure.last_chosen_option,
+                    adventure.id,
+                    adventure.current_scene_number,
+                )
+            )
+            
+            
+            cursor.execute(
+                INSERT_ADVENTURE_HISTORY,
+                (
+                    adventure.current_story_text,
+                    json.dumps(adventure.current_story_options),
+                    adventure.current_scene_number,
+                )
+            )
+        logger.info("Updated adventure and saved adventure proggression")    
+    except Exception as e:
+        logger.error("Could not update new adventure advancement")
 
 # def insert_adventure_history(adventure_id: str, adventure_history: dict):
 #     try:

@@ -42,6 +42,11 @@ adventure_id, scene_text, options, scene_number
 VALUES(?,?,?,?) 
 '''
 
+UPDATE_HISTORY_CHOSEN_OPTION = '''
+UPDATE adventures_history
+SET chosen_option = ?
+WHERE adventure_id = ? AND scene_number = ?
+'''
 
 GET_ADVENTURE_BY_ID = '''
 SELECT * FROM adventures WHERE id = ?
