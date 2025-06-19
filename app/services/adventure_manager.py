@@ -65,7 +65,7 @@ def get_adventure(adventure_id : str)-> Adventure:
     
     current_scene_history = adventure_history_rows[current_scene_num-1]
 
-    create_ai_context_from_db(adventure_history_rows) #TODO create the context
+    create_ai_context_from_db(adventure_row["type"], adventure_history_rows) #TODO create the context
 
     data = {
         "id": adventure_id,
