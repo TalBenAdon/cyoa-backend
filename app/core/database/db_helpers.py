@@ -134,7 +134,8 @@ def return_formatted_history(history_array_rows):
             formatted_history.append({
                 "scene_text": row["scene_text"],
                 "options": json.loads(row["options"]),
-                "scene_number": row["scene_number"]
+                "scene_number": row["scene_number"],
+                "chosen_option": row["chosen_option"]
             })
         except (KeyError, json.JSONDecodeError) as e:
             logger.error(f"Error formatting history entries: {e}")
