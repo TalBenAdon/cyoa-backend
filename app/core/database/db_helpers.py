@@ -61,6 +61,7 @@ def save_new_adventure(adventure: Adventure):
     
 
 def save_and_update_adventure(adventure: Adventure):
+    print(f"MY CHOSEN OPTION: : :{adventure.last_chosen_option}")
     if not adventure.last_chosen_option:
         raise Exception("No last option within adventure") #TODO raise an exception for when theres no last_chosen_option
     try:
@@ -70,7 +71,7 @@ def save_and_update_adventure(adventure: Adventure):
                 (
                     adventure.last_chosen_option,
                     adventure.id,
-                    adventure.current_scene_number,
+                   (adventure.current_scene_number-1), #TODO see if there's a better way to update on the chosen scene instead of just previous
                 )
             )
             
