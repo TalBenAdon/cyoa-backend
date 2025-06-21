@@ -1,13 +1,16 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
+from app.utils.get_system_message import get_system_message
 from app.core.logger import get_logger
-from app.core.database.db_helpers import insert_adventure, insert_adventure_history
+from app.core.database.db_helpers import save_new_adventure, save_and_update_adventure
+from app.utils.create_ai_context_from_db import create_ai_context_from_db
 from app.models.adventure import AdvanceAdventure, StartAdventure, AdventureInfoResponse, AdventuresIdListResponse
 from app.exceptions.HasExistingAdventureException import HasExistingAdventureException
 from app.exceptions.AdventureNotFound import AdventureNotFound
 from app.services.adventure_manager import (create_adventure,
                                             get_adventure_with_history_snapshot,
-                                            get_adventures)
+                                            get_adventures,
+                                            get_adventure)
 
 logger = get_logger(__name__)
 router = APIRouter()
@@ -43,20 +46,16 @@ async def get_adventure_info(adventure_id):
             }})
 async def start_new_adventure(request: StartAdventure):
     adventure = create_adventure(request.type)
-
-        
+    system_message = get_system_message(request.type)
+ 
     async def event_generator():
-        generator = await adventure.start_adventure()
+        generator = await adventure.start_adventure(system_message)
         async for word in generator:
             yield word        
         
-        insert_adventure(adventure)
-        logger.info("New adventure has been inserted to database")
-        insert_adventure_history(adventure.id, adventure.history[-1])
-        logger.info("New adventure history has been inserted to database")
+        save_new_adventure(adventure)
         
         logger.info("/start adventure route completed streaming")
-    
     
     return StreamingResponse(event_generator(), media_type="text/plain", headers={"X-Adventure-ID": adventure.id})
 
@@ -71,6 +70,7 @@ async def start_new_adventure(request: StartAdventure):
             }})
 async def advance_adventure(adventure_id, request : AdvanceAdventure):
     adventure = get_adventure(adventure_id)
+    message_context_list = create_ai_context_from_db(adventure.type, adventure.history)
     if not adventure:
         logger.warning("Adventure was not found when choice was sent")
         raise AdventureNotFound()
@@ -78,9 +78,11 @@ async def advance_adventure(adventure_id, request : AdvanceAdventure):
     if not adventure.is_starting_scene():
         async def event_generator():
             try:
-                generator = await adventure.advance_scene(request.choice)
+                generator = await adventure.advance_scene(request.choice, message_context_list)
                 async for word in generator:
                     yield word        
+                    
+                save_and_update_adventure(adventure)
                 logger.info("/choice adventure route completed")
             except Exception as e:
                 logger.error(f"streaming failed: {e}")
