@@ -17,6 +17,7 @@ class HistoryEntry(BaseModel):
     scene_text: str = Field(alias="sceneText")
     options:List[str]
     scene_number:int = Field(alias="sceneNumber")
+    chosen_option: str = Field(alias="chosenOption")
 
     model_config = {
         "populate_by_name" : True

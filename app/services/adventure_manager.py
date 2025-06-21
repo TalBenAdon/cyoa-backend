@@ -41,7 +41,6 @@ def get_adventure_with_history_snapshot(adventure_id : str) -> AdventureSnapshot
     adventure_history_rows = get_adventure_history_by_id(adventure_id)
     formatted_history = return_formatted_history(adventure_history_rows)
     
-    print(f" my history rows{adventure_history_rows}")
     adventure_snapshot = AdventureSnapshot(
         adventure_id = adventure_row["id"],
         type = adventure_row["type"],
