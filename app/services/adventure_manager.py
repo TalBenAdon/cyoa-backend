@@ -9,7 +9,9 @@ from app.models.adventure import AdventureIdName
 from app.core.database.db_helpers import (
                                           get_adventure_by_id,
                                           get_adventure_history_by_id,
-                                          return_formatted_history)
+                                          return_formatted_history,
+                                          get_adventures_names_id_from_db,)
+
 
 logger = get_logger(__name__)
 
@@ -27,8 +29,9 @@ def create_adventure(type: str = "fantasy") -> Adventure:
 
 
 def get_adventures() -> List[AdventureIdName]:
-    return [ AdventureIdName(adventure_id = key, adventure_name= value.name) for key, value in adventures.items() ] #TODO update to gather from db
-    
+    adventures = get_adventures_names_id_from_db()
+    return [AdventureIdName(adventure_id=key, adventure_name=value) for key, value in adventures]
+   
 
 
 

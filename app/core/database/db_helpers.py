@@ -1,11 +1,11 @@
 import json
 from app.core.database.queries import (INSERT_ADVENTURE,
                                        INSERT_ADVENTURE_HISTORY,
-                                       GET_ALL_ADVENTURES,
                                        GET_ADVENTURE_BY_ID,
                                        GET_ADVENTURE_HISTORY,
                                        UPDATE_HISTORY_CHOSEN_OPTION,
-                                       UPDATE_ADVENTURE_SCENE_NUMBER)
+                                       UPDATE_ADVENTURE_SCENE_NUMBER,
+                                       GET_ALL_ADVENTURES_NAME_ID)
 from app.core.database.connection import db_cursor
 from app.services.adventure import Adventure
 from app.core.logger import get_logger
@@ -29,7 +29,7 @@ logger = get_logger(__name__)
 #         logger.error(f"Error inserting adventure to database: {e}")
         
         
-def save_new_adventure(adventure: Adventure):
+def save_new_adventure(adventure: Adventure):  #TODO let the error bubble up to the routes, handle the exception over there.
     try:
         with db_cursor() as cursor:
             cursor.execute(
@@ -60,8 +60,7 @@ def save_new_adventure(adventure: Adventure):
         logger.error(f"Error saving adventure:{e}")
     
 
-def save_and_update_adventure(adventure: Adventure):
-    print(f"MY CHOSEN OPTION: : :{adventure.last_chosen_option}")
+def save_and_update_adventure(adventure: Adventure):  #TODO let the error bubble up to the routes, handle the exception over there.
     if not adventure.last_chosen_option:
         raise Exception("No last option within adventure") #TODO raise an exception for when theres no last_chosen_option
     try:
@@ -115,11 +114,11 @@ def save_and_update_adventure(adventure: Adventure):
 #         logger.error(f"Error inserting adventure history to database: {e}")
 
 
-def get_adventures_from_db():
+def get_adventures_names_id_from_db(): #TODO let the error bubble up to the routes, handle the exception over there.
     try:
         with db_cursor() as cursor:
            cursor.execute(
-               GET_ALL_ADVENTURES
+               GET_ALL_ADVENTURES_NAME_ID
            )
            rows = cursor.fetchall()
            return [dict(row) for row in rows] 
@@ -128,7 +127,7 @@ def get_adventures_from_db():
         logger.error(f"Error fetching adventures from database: {e}")
 
 
-def return_formatted_history(history_array_rows):
+def return_formatted_history(history_array_rows):  #TODO let the error bubble up to the routes, handle the exception over there.
     formatted_history = []
     for row in history_array_rows:
         try:
@@ -142,7 +141,7 @@ def return_formatted_history(history_array_rows):
             logger.error(f"Error formatting history entries: {e}")
     return formatted_history
 
-        
+         #TODO let the error bubble up to the routes, handle the exception over there.
 def get_adventure_by_id(adventure_id :str):  #TODO as the app progresses check if required by itself
     try:
         with db_cursor() as cursor:
@@ -157,7 +156,7 @@ def get_adventure_by_id(adventure_id :str):  #TODO as the app progresses check i
          logger.error(f"Error fetching adventure from database: {e}")
              
          
-def get_adventure_with_history_by_id(adventure_id):
+def get_adventure_with_history_by_id(adventure_id): #TODO let the error bubble up to the routes, handle the exception over there.
     try:
         with db_cursor() as cursor:
             cursor.execute(
@@ -186,6 +185,7 @@ def get_adventure_with_history_by_id(adventure_id):
         return None #TODO can raise a different error later 
          
          
+          #TODO let the error bubble up to the routes, handle the exception over there.
 def get_adventure_history_by_id(adventure_id: str): #TODO as the app progresses check if required by itself
     try:
         with db_cursor() as cursor:
@@ -198,4 +198,6 @@ def get_adventure_history_by_id(adventure_id: str): #TODO as the app progresses 
         
     except Exception as e:
          logger.error(f"Error fetching adventure's from database: {e}")
-         
+
+
+        
