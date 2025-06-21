@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS adventures_history(
     scene_text TEXT NOT NULL,
     options TEXT NOT NULL,
     chosen_option TEXT,
-    scene_number INTEGER,
+    scene_number INTEGER NOT NULL,
     timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (adventure_id) REFERENCES adventures(id)
 )
@@ -40,6 +40,19 @@ INSERT INTO adventures_history(
 adventure_id, scene_text, options, scene_number
 )
 VALUES(?,?,?,?) 
+'''
+
+UPDATE_HISTORY_CHOSEN_OPTION = '''
+UPDATE adventures_history
+SET chosen_option = ?
+WHERE adventure_id = ? AND scene_number = ?
+'''
+
+
+UPDATE_ADVENTURE_SCENE_NUMBER = '''
+UPDATE adventures
+SET current_scene_number = ?
+WHERE id = ?
 '''
 
 

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 import re
 import uuid
 
@@ -13,11 +13,9 @@ class Adventure:
         self.name = "" #adventure needs a short name for UI purposes
         self.history = [] #need to decide how to define adventure history
 
-        self.current_story_text = None #current story text we just got from the ai (send to USER)
-        self.last_chosen_option = None
+        self.current_story_text :Optional[str]= None  #current story text we just got from the ai (send to USER)
+        self.last_chosen_option :Optional[str] = None
         self.current_story_options = [] #current story options (send to USER)
-
-
 
 
     @classmethod
@@ -29,44 +27,16 @@ class Adventure:
         adventure.current_story_text = data["current_story_text"]
         adventure.last_chosen_option = data["last_chosen_option"]
         adventure.current_story_options = data["current_story_options"]
+        adventure.history = data["history"]
+        return adventure
 
-
-    async def start_adventure(self):
-        system_message = {
-            "role": "system",
-            "content":f"""
-            You are an experienced storyteller, like a D&D game master. You will adjust your storytelling style based on the type of adventure. 
-            This adventure's type is: "{self.type}".
+    async def start_adventure(self, system_message):
             
-         Your responses must be formatted using the following tags:
-
-    - In the **first reply only**, include the title of the adventure using the <name> tag:
-        <name>
-        The adventure's name
-        </name>
-
-    - Every reply (including the first) must include the following:
-        <text>
-        Your adventure narration here
-        </text>
-        <option1>
-        Action the user may take
-        </option1>
-        <option2>
-        Action the user may take
-        </option2>
-        <option3>
-        Action the user may take
-        </option3>
-    """
-            }
-            
-        
         user_message = {"role": "user", "content":"Start my adventure"}
         
-        self.ai_message_context = [system_message, user_message]
+        ai_message_context = [system_message, user_message]
         
-        return self.client.chat_with_ai(self.ai_message_context, on_complete=self.parse_adventure_response)
+        return self.client.chat_with_ai(ai_message_context, on_complete=self.parse_adventure_response)
 
 
 
@@ -81,12 +51,12 @@ class Adventure:
 
 
 
-    async def advance_scene(self, user_choice):
+    async def advance_scene(self, user_choice:str, message_context: list[dict]):
         print(user_choice)
-        user_message = {"role": "user", "content": f"{user_choice}"}
-        self.ai_message_context.append(user_message)
-        
-        return self.client.chat_with_ai(self.ai_message_context, on_complete=self.parse_adventure_response)
+
+        message_context.append({"role": "user", "content": f"{user_choice}"})
+        self.last_chosen_option = user_choice
+        return self.client.chat_with_ai(message_context, on_complete=self.parse_adventure_response)
 
 
 
@@ -97,14 +67,14 @@ class Adventure:
 
 
 
-    def parse_adventure_response(self, response: str):
+    def parse_adventure_response(self, response: str): #TODO overhaul system message and regex accordingly, might change to just normal json response for easier ai proccessing
         # Extract content inside <text>...</text/>
         print(response)
-        self.ai_message_context.append({"role": "assistant", "content": f"{response}"})
-        print(f"parsed class message context: {self.ai_message_context}")
+
         if not self.name:
             name_match = re.search(r"<name>\s*(.*?)\s*</?name\s*/?>", response, re.DOTALL)
             self.name = name_match.group(1).strip() if name_match else ""
+            
         
         text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""

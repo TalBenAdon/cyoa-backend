@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 
 class StartAdventure(BaseModel):
     type: str | None
@@ -17,6 +17,7 @@ class HistoryEntry(BaseModel):
     scene_text: str = Field(alias="sceneText")
     options:List[str]
     scene_number:int = Field(alias="sceneNumber")
+    chosen_option : None | str = Field(alias="chosenOption")
 
     model_config = {
         "populate_by_name" : True
