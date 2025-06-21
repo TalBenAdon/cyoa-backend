@@ -61,7 +61,7 @@ SELECT * FROM adventures WHERE id = ?
 '''
 
 
-GET_ALL_ADVENTURES = '''
+GET_ALL_ADVENTURES_NAME_ID = '''
 SELECT id, name FROM adventures
 '''
 

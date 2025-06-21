@@ -1,11 +1,11 @@
 import json
 from app.core.database.queries import (INSERT_ADVENTURE,
                                        INSERT_ADVENTURE_HISTORY,
-                                       GET_ALL_ADVENTURES,
                                        GET_ADVENTURE_BY_ID,
                                        GET_ADVENTURE_HISTORY,
                                        UPDATE_HISTORY_CHOSEN_OPTION,
-                                       UPDATE_ADVENTURE_SCENE_NUMBER)
+                                       UPDATE_ADVENTURE_SCENE_NUMBER,
+                                       GET_ALL_ADVENTURES_NAME_ID)
 from app.core.database.connection import db_cursor
 from app.services.adventure import Adventure
 from app.core.logger import get_logger
@@ -115,11 +115,11 @@ def save_and_update_adventure(adventure: Adventure):
 #         logger.error(f"Error inserting adventure history to database: {e}")
 
 
-def get_adventures_from_db():
+def get_adventures_names_id_from_db():
     try:
         with db_cursor() as cursor:
            cursor.execute(
-               GET_ALL_ADVENTURES
+               GET_ALL_ADVENTURES_NAME_ID
            )
            rows = cursor.fetchall()
            return [dict(row) for row in rows] 
@@ -198,4 +198,6 @@ def get_adventure_history_by_id(adventure_id: str): #TODO as the app progresses 
         
     except Exception as e:
          logger.error(f"Error fetching adventure's from database: {e}")
-         
+
+
+        
