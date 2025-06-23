@@ -30,7 +30,8 @@ def create_adventure(type: str = "fantasy") -> Adventure:
 
 def get_adventures() -> List[AdventureIdName]:
     adventures = get_adventures_names_id_from_db()
-    return [AdventureIdName(adventure_id=key, adventure_name=value) for key, value in adventures]
+    print(adventures)
+    return [AdventureIdName(adventure_id=adventure["id"], adventure_name=adventure["name"]) for adventure in adventures]
    
 
 
