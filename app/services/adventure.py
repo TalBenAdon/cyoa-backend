@@ -6,16 +6,16 @@ class Adventure:
     def __init__(self, client, type):
         self.id = str(uuid.uuid4())
         self.client = client
-        #should generate some starting story and decisions when initialized with start
-        self.current_scene_number = 0 #maybe add an additional "starting info" to let the ai generate a different type of start?
-        # maybe change status to numbers? 0 is start, and the story progresses by numbers of "scenes" generated
+  
+        self.current_scene_number = 0 
+    
         self.type = type
-        self.name = "" #adventure needs a short name for UI purposes
-        self.history = [] #need to decide how to define adventure history
+        self.name = "" 
+        self.history = [] 
 
-        self.current_story_text :Optional[str]= None  #current story text we just got from the ai (send to USER)
+        self.current_story_text :Optional[str]= None  
         self.last_chosen_option :Optional[str] = None
-        self.current_story_options = [] #current story options (send to USER)
+        self.current_story_options = [] 
 
 
     @classmethod
