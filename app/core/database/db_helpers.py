@@ -11,22 +11,6 @@ from app.services.adventure import Adventure
 from app.core.logger import get_logger
 
 logger = get_logger(__name__)
-
-
-# def insert_adventure(adventure: Adventure):
-#     try:
-#         with db_cursor() as cursor:
-#             cursor.execute(
-#                 INSERT_ADVENTURE,
-#                 (
-#                     adventure.id,
-#                     adventure.name,
-#                     adventure.type,
-#                     adventure.current_scene_number
-#                 )
-#             )
-#     except Exception as e:
-#         logger.error(f"Error inserting adventure to database: {e}")
         
         
 def save_new_adventure(adventure: Adventure):  #TODO let the error bubble up to the routes, handle the exception over there.
@@ -98,20 +82,6 @@ def save_and_update_adventure(adventure: Adventure):  #TODO let the error bubble
     except Exception as e:
         logger.error(f"Could not update new adventure advancement:{e}")
 
-# def insert_adventure_history(adventure_id: str, adventure_history: dict):
-#     try:
-#         with db_cursor() as cursor:
-#             cursor.execute(
-#                 INSERT_ADVENTURE_HISTORY,
-#                 (
-#                     adventure_id,
-#                     adventure_history["text"],
-#                     json.dumps(adventure_history["options"]),
-#                     adventure_history["scene_number"],
-#                  )
-#             )
-#     except Exception as e:
-#         logger.error(f"Error inserting adventure history to database: {e}")
 
 
 def get_adventures_names_id_from_db(): #TODO let the error bubble up to the routes, handle the exception over there.
