@@ -72,15 +72,16 @@ class Adventure:
         print(response)
 
         if not self.name:
-            name_match = re.search(r"<name>\s*(.*?)\s*</?name\s*/?>", response, re.DOTALL)
+            name_match = re.search(r"::TITLE::(.*?)::END::", response, re.DOTALL)
             self.name = name_match.group(1).strip() if name_match else ""
             
         
-        text_match = re.search(r"<text>\s*(.*?)\s*<\/?text\s*/?>", response, re.DOTALL)
+        text_match = re.search(r"::TEXT::(.*?)::END::", response, re.DOTALL)
         adventure_text = text_match.group(1).strip() if text_match else ""
 
-        option_pattern = r"<option\d+>\s*(.*?)\s*<\/?option\d+\s*/?>"
+        option_pattern = r"::OPTION::(.*?)::END::"
         options = re.findall(option_pattern, response, re.DOTALL)
+        options = [opt.strip() for opt in options]
         
         self.current_story_text = adventure_text
         self.current_story_options = options
