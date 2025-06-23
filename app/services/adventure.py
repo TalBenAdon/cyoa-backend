@@ -67,8 +67,8 @@ class Adventure:
 
 
 
-    def parse_adventure_response(self, response: str): #TODO overhaul system message and regex accordingly, might change to just normal json response for easier ai proccessing
-        # Extract content inside <text>...</text/>
+    def parse_adventure_response(self, response: str):
+
         print(response)
 
         if not self.name:
