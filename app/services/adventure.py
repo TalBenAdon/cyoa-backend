@@ -18,6 +18,8 @@ class Adventure:
         self.current_story_options = [] 
 
 
+
+
     @classmethod
     def from_db(cls, client, data: dict) -> "Adventure":
         adventure = cls(client, data["type"])
@@ -29,6 +31,10 @@ class Adventure:
         adventure.current_story_options = data["current_story_options"]
         adventure.history = data["history"]
         return adventure
+
+
+
+
 
     async def start_adventure(self, system_message):
             
@@ -42,12 +48,10 @@ class Adventure:
 
 
 
-
     def advance_status(self):
         self.current_scene_number += 1
     
     
-
 
 
 
@@ -57,8 +61,6 @@ class Adventure:
         message_context.append({"role": "user", "content": f"{user_choice}"})
         self.last_chosen_option = user_choice
         return self.client.chat_with_ai(message_context, on_complete=self.parse_adventure_response)
-
-
 
 
 
@@ -93,8 +95,6 @@ class Adventure:
         
         
         
-
-
 
 
 
